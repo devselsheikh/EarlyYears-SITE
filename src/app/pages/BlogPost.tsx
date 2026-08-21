@@ -100,7 +100,7 @@ function RenderSection({ section, stream }: { section: BlogSection; stream: 'par
     case 'takeaway':
       return (
         <div className={`my-8 p-6 rounded-2xl border-2 ${stream === 'parents' ? 'bg-gradient-to-br from-peach-50 to-orange-50 border-peach-200' : 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'}`}>
-          {section.label && <h4 className={`font-bold text-lg mb-4 ${accentText}`}>{section.label}</h4>}
+          {section.label && <h3 className={`font-bold text-lg mb-4 ${accentText}`}>{section.label}</h3>}
           <ul className="space-y-2.5">
             {(section.content as string[]).map((item, i) => (
               <li key={i} className="flex items-start gap-3">
@@ -202,7 +202,7 @@ function RelatedCard({ post, stream }: { post: PostView; stream: 'parents' | 'ed
         <div className="min-w-0">
           <p className={`text-xs font-bold mb-1 ${accent}`}>{post.category}</p>
           <h4 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 mb-1">{post.title}</h4>
-          <span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {post.readTime}</span>
+          <span className="text-xs text-gray-600 flex items-center gap-1"><Clock className="w-3 h-3" /> {post.readTime}</span>
         </div>
       </motion.div>
     </Link>
@@ -282,6 +282,8 @@ export default function BlogPost() {
         ]),
       ]} />
       {isParent ? <DaycareNav /> : <EduHubNav />}
+
+      <main>
 
       {/* Hero */}
       <section className={`${heroGradient} py-14 sm:py-20`}>
@@ -423,6 +425,7 @@ export default function BlogPost() {
         </section>
       )}
 
+      </main>
       {isParent ? <DaycareFooter /> : <EduHubFooter />}
     </div>
   );

@@ -20,7 +20,7 @@ export default function DaycareParentInfo() {
             At Early Years Daycare, we emphasize parents and teachers working in partnership. We believe that strong communication and collaboration between home and daycare create the best outcomes for children.
           </p>
           <div className="bg-orange-50 rounded-2xl p-6">
-            <h4 className="text-lg text-gray-900 mb-3">How We Communicate</h4>
+            <h3 className="text-lg text-gray-900 mb-3">How We Communicate</h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start gap-2">
                 <div className="w-2 h-2 rounded-full bg-orange-400 mt-2 flex-shrink-0"></div>
@@ -54,7 +54,7 @@ export default function DaycareParentInfo() {
             Our daily routines run from 8:15 AM to 4:00 PM, Monday through Friday. We follow a structured yet flexible schedule that balances learning, play, meals, and rest.
           </p>
           <div className="bg-pink-50 rounded-2xl p-6">
-            <h4 className="text-lg text-gray-900 mb-4">Typical Day Schedule</h4>
+            <h3 className="text-lg text-gray-900 mb-4">Typical Day Schedule</h3>
             <div className="space-y-3">
               {[
                 { time: '8:15 AM', activity: 'Arrival & Settling' },
@@ -78,7 +78,7 @@ export default function DaycareParentInfo() {
             <div className="flex items-start gap-3">
               <AlertCircle className="w-6 h-6 text-yellow-700 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-lg text-gray-900 mb-2">Pickup Policy</h4>
+                <h3 className="text-lg text-gray-900 mb-2">Pickup Policy</h3>
                 <p className="text-gray-700">
                   Children must be picked up on time at 4:00 PM. Late pickup incurs a penalty fee. Please notify us in advance if you'll be late due to an emergency.
                 </p>
@@ -100,7 +100,7 @@ export default function DaycareParentInfo() {
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-teal-50 rounded-2xl p-6">
-              <h4 className="text-lg text-gray-900 mb-3">Health Checks</h4>
+              <h3 className="text-lg text-gray-900 mb-3">Health Checks</h3>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 rounded-full bg-teal-400 mt-2 flex-shrink-0"></div>
@@ -117,7 +117,7 @@ export default function DaycareParentInfo() {
               </ul>
             </div>
             <div className="bg-blue-50 rounded-2xl p-6">
-              <h4 className="text-lg text-gray-900 mb-3">Illness Policy</h4>
+              <h3 className="text-lg text-gray-900 mb-3">Illness Policy</h3>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
@@ -148,7 +148,7 @@ export default function DaycareParentInfo() {
             We provide daily freshly cooked warm lunch with balanced nutrients made from seasonal vegetables and fresh ingredients. Our meals are designed to support healthy growth and development.
           </p>
           <div className="bg-yellow-50 rounded-2xl p-6">
-            <h4 className="text-lg text-gray-900 mb-3">What We Provide</h4>
+            <h3 className="text-lg text-gray-900 mb-3">What We Provide</h3>
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start gap-2">
                 <div className="w-2 h-2 rounded-full bg-yellow-400 mt-2 flex-shrink-0"></div>
@@ -186,7 +186,7 @@ export default function DaycareParentInfo() {
             Children should wear comfortable, practical clothing suitable for active play and learning activities. Please follow these guidelines to ensure your child's safety and comfort.
           </p>
           <div className="bg-coral-50 rounded-2xl p-6">
-            <h4 className="text-lg text-gray-900 mb-3">Clothing Guidelines</h4>
+            <h3 className="text-lg text-gray-900 mb-3">Clothing Guidelines</h3>
             <div className="space-y-4">
               <div>
                 <div className="text-green-700 mb-2">✓ Please Wear:</div>
@@ -212,7 +212,7 @@ export default function DaycareParentInfo() {
             <div className="flex items-start gap-3">
               <AlertCircle className="w-6 h-6 text-orange-700 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-lg text-gray-900 mb-2">Important: Label All Belongings</h4>
+                <h3 className="text-lg text-gray-900 mb-2">Important: Label All Belongings</h3>
                 <p className="text-gray-700">
                   Please clearly label all clothing, bags, water bottles, and personal items with your child's name to prevent loss.
                 </p>
@@ -227,6 +227,8 @@ export default function DaycareParentInfo() {
   return (
     <div className="min-h-screen bg-white">
       <DaycareNav />
+
+      <main>
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-yellow-50 to-teal-50 py-20 lg:py-32">
@@ -268,7 +270,7 @@ export default function DaycareParentInfo() {
                     <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${section.color} flex items-center justify-center`}>
                       <section.icon className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-2xl text-gray-900">{section.title}</h3>
+                    <h2 className="text-2xl text-gray-900">{section.title}</h2>
                   </div>
                   <div className={`transform transition-transform ${openSection === section.id ? 'rotate-180' : ''}`}>
                     <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -319,6 +321,7 @@ export default function DaycareParentInfo() {
         </div>
       </div>
 
+      </main>
       <DaycareFooter />
     </div>
   );

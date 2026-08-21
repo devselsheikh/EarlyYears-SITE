@@ -3,12 +3,14 @@ import { Heart, Target, Users, Award, BookOpen, MapPin } from 'lucide-react';
 import { Link } from 'react-router';
 import DaycareNav from '../../components/DaycareNav';
 import DaycareFooter from '../../components/DaycareFooter';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import ManagedImage from '../../components/ManagedImage';
 
 export default function DaycareAbout() {
   return (
     <div className="min-h-screen bg-white">
       <DaycareNav />
+
+      <main>
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-yellow-50 to-teal-50 py-16 sm:py-20 lg:py-32">
@@ -34,8 +36,8 @@ export default function DaycareAbout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
@@ -59,15 +61,15 @@ export default function DaycareAbout() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMHBsYXlpbmclMjBwcmVzY2hvb2x8ZW58MHx8fHwxNzM2MzU1MjAyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                <ManagedImage
+                  assetKey="daycare.about.hero"
                   alt="Children playing at Early Years Daycare"
                   className="w-full h-full object-cover"
                 />
@@ -149,15 +151,15 @@ export default function DaycareAbout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="relative"
             >
               <div className="rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGlsZHJlbiUyMGxlYXJuaW5nJTIwdG9nZXRoZXJ8ZW58MHx8fHwxNzM2MzU1MjAyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                <ManagedImage
+                  assetKey="daycare.about.mission"
                   alt="Children settling in at daycare"
                   className="w-full h-full object-cover"
                 />
@@ -165,8 +167,8 @@ export default function DaycareAbout() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
@@ -319,6 +321,7 @@ export default function DaycareAbout() {
         </div>
       </div>
 
+      </main>
       <DaycareFooter />
     </div>
   );

@@ -790,9 +790,14 @@ export function addSubmission(sub: Omit<CMSSubmission, 'id' | 'read'>): void {
 
 // ─── Supabase async helpers ───────────────────────────────────────────────────
 
-import { supabase } from '../utils/supabase/client';
+const supabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL?.trim() && import.meta.env.VITE_SUPABASE_ANON_KEY?.trim());
+async function getSupabase() {
+  return (await import('../utils/supabase/client')).supabase;
+}
 
 export async function loadPublishedCMS(): Promise<CMSContent> {
+  if (!supabaseConfigured) return loadCMS();
+  const supabase = await getSupabase();
   try {
     const { data, error } = await supabase
       .from('cms_published')
@@ -807,6 +812,8 @@ export async function loadPublishedCMS(): Promise<CMSContent> {
 }
 
 export async function loadDraftCMS(): Promise<CMSContent> {
+  if (!supabaseConfigured) return loadCMS();
+  const supabase = await getSupabase();
   try {
     const { data, error } = await supabase
       .from('cms_drafts')
@@ -824,6 +831,7 @@ export async function loadDraftCMS(): Promise<CMSContent> {
 }
 
 export async function saveDraft(data: CMSContent): Promise<{ error: string | null }> {
+  const supabase = await getSupabase();
   const { error } = await supabase.from('cms_drafts').upsert({
     id: 'main',
     data,
@@ -833,6 +841,7 @@ export async function saveDraft(data: CMSContent): Promise<{ error: string | nul
 }
 
 export async function publishCMS(data: CMSContent): Promise<{ error: string | null }> {
+  const supabase = await getSupabase();
   const { error } = await supabase.from('cms_published').upsert({
     id: 'main',
     data,
@@ -852,11 +861,38 @@ export interface SupabaseSubmission {
 export async function insertSubmission(
   source: 'daycare' | 'eduhub' | 'general',
   payload: Record<string, unknown>
-): Promise<void> {
-  await supabase.from('submissions').insert({ source, payload, status: 'unread' });
+): Promise<{ cloudSaved: boolean; localSaved: boolean; error?: string }> {
+  const stringValue = (value: unknown) => typeof value === 'string' ? value : '';
+  addSubmission({
+    submittedAt: stringValue(payload.submittedAt) || new Date().toISOString(),
+    source: source === 'daycare' ? 'Daycare' : source === 'eduhub' ? 'EduHub' : 'General',
+    name: stringValue(payload.name),
+    email: stringValue(payload.email),
+    phone: stringValue(payload.phone),
+    message: stringValue(payload.message),
+    extra: Object.fromEntries(Object.entries(payload).filter(([, value]) => typeof value === 'string').map(([key, value]) => [key, value as string])),
+  });
+
+  if (!supabaseConfigured) return { cloudSaved: false, localSaved: true, error: 'Cloud submissions are not configured.' };
+  try {
+    const supabase = await getSupabase();
+    const { error } = await supabase.from('submissions').insert({ source, payload, status: 'unread' });
+    if (error) return { cloudSaved: false, localSaved: true, error: error.message };
+    return { cloudSaved: true, localSaved: true };
+  } catch (error) {
+    return { cloudSaved: false, localSaved: true, error: error instanceof Error ? error.message : 'Cloud submission failed.' };
+  }
 }
 
 export async function fetchSubmissions(): Promise<SupabaseSubmission[]> {
+  if (!supabaseConfigured) return loadSubmissions().map(item => ({
+    id: item.id,
+    source: item.source.toLowerCase(),
+    payload: { name: item.name, email: item.email, phone: item.phone, message: item.message, ...item.extra },
+    status: item.read ? 'read' : 'unread',
+    created_at: item.submittedAt,
+  }));
+  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('submissions')
     .select('*')
@@ -866,11 +902,23 @@ export async function fetchSubmissions(): Promise<SupabaseSubmission[]> {
 }
 
 export async function updateSubmissionStatus(id: string, status: 'read' | 'unread'): Promise<void> {
-  await supabase.from('submissions').update({ status }).eq('id', id);
+  if (!supabaseConfigured) {
+    saveSubmissions(loadSubmissions().map(item => item.id === id ? { ...item, read: status === 'read' } : item));
+    return;
+  }
+  const supabase = await getSupabase();
+  const { error } = await supabase.from('submissions').update({ status }).eq('id', id);
+  if (error) throw new Error(error.message);
 }
 
 export async function deleteSubmission(id: string): Promise<void> {
-  await supabase.from('submissions').delete().eq('id', id);
+  if (!supabaseConfigured) {
+    saveSubmissions(loadSubmissions().filter(item => item.id !== id));
+    return;
+  }
+  const supabase = await getSupabase();
+  const { error } = await supabase.from('submissions').delete().eq('id', id);
+  if (error) throw new Error(error.message);
 }
 
 // ─── Global asset CRUD ────────────────────────────────────────────────────────
@@ -932,6 +980,7 @@ export interface AssetVersionRow {
 }
 
 export async function fetchGlobalAssets(): Promise<GlobalAssetRow[]> {
+  const supabase = await getSupabase();
   const { data, error } = await supabase
     .from('global_assets')
     .select('*')
@@ -968,6 +1017,7 @@ export async function saveDraftRecord(
   assetKey: string,
   params: SaveDraftRecordParams,
 ): Promise<{ error: string | null }> {
+  const supabase = await getSupabase();
   // Only include keys that were explicitly provided (never null-out unprovided fields)
   const update: Record<string, unknown> = {
     asset_key: assetKey,
@@ -1014,6 +1064,7 @@ export async function saveDraftRecord(
 export async function getDraftPreviewUrl(
   storagePath: string,
 ): Promise<{ url: string | null; error: string | null }> {
+  const supabase = await getSupabase();
   const { data, error } = await supabase.storage
     .from(DRAFT_BUCKET)
     .createSignedUrl(storagePath, 3600);
@@ -1032,6 +1083,7 @@ export async function getDraftPreviewUrl(
 export async function downloadDraftBlob(
   storagePath: string,
 ): Promise<{ blob: Blob | null; error: string | null }> {
+  const supabase = await getSupabase();
   const { data, error } = await supabase.storage
     .from(DRAFT_BUCKET)
     .download(storagePath);
@@ -1063,6 +1115,7 @@ export async function writePublishedRecord(
     focal_y: number;
   },
 ): Promise<{ error: string | null; assetId: string | null }> {
+  const supabase = await getSupabase();
   const { error } = await supabase.from('global_assets').update({
     published_remote_url: params.published_remote_url,
     published_mobile_url: params.published_mobile_url,
@@ -1094,6 +1147,7 @@ export async function writePublishedRecord(
  * For storage-uploaded drafts use approveAssetForPublication from assetPublisher.ts.
  */
 export async function publishAllAssets(): Promise<{ error: string | null }> {
+  const supabase = await getSupabase();
   // Fetch all assets with an external URL draft (not storage-backed)
   const { data, error: fetchErr } = await supabase
     .from('global_assets')
@@ -1138,6 +1192,7 @@ export async function publishAllAssets(): Promise<{ error: string | null }> {
 }
 
 export async function fetchAssetVersions(assetKey: string): Promise<AssetVersionRow[]> {
+  const supabase = await getSupabase();
   // Resolve asset UUID from key, then fetch versions
   const { data: assetData } = await supabase
     .from('global_assets')
@@ -1157,6 +1212,7 @@ export async function fetchAssetVersions(assetKey: string): Promise<AssetVersion
 }
 
 export async function rollbackAsset(assetKey: string, originalUrl: string, version: number): Promise<{ error: string | null }> {
+  const supabase = await getSupabase();
   const { error } = await supabase.from('global_assets').update({
     draft_original_url: originalUrl,
     version,
@@ -1234,6 +1290,7 @@ export async function uploadDraftToStorage(
   file: File,
   version: number,
 ): Promise<{ previewUrl: string | null; path: string | null; error: string | null }> {
+  const supabase = await getSupabase();
   // ── 1. Verify authenticated session ────────────────────────────────────────
   const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
   const session = sessionData?.session ?? null;
@@ -1304,6 +1361,7 @@ export async function uploadPublishedToStorage(
   format: 'webp' | 'jpeg' | 'png',
   version: number,
 ): Promise<{ url: string | null; path: string | null; error: string | null }> {
+  const supabase = await getSupabase();
   const safeKey = assetKey.replace(/\./g, '-');
   const ext = format === 'jpeg' ? 'jpg' : format;
   const path = `published/${safeKey}/v${version}-${label}.${ext}`;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Circle, Rocket, AlertTriangle, ExternalLink, RefreshCw } from 'lucide-react';
-import { supabase } from '../../utils/supabase/client';
+import { checkBackendHealth, type BackendHealth } from '../../utils/supabase/health';
 
 interface CheckItem {
   id: string;
@@ -55,10 +55,10 @@ function saveChecked(data: Record<string, boolean>) {
 
 export function LaunchChecklistSection() {
   const [checked, setChecked] = useState<Record<string, boolean>>(loadChecked);
-  const [supabaseOk, setSupabaseOk] = useState<boolean | null>(null);
+  const [backendHealth, setBackendHealth] = useState<BackendHealth | null>(null);
 
   useEffect(() => {
-    supabase.from('cms_published').select('id').limit(1).then(({ error }) => setSupabaseOk(!error));
+    checkBackendHealth().then(setBackendHealth);
   }, []);
 
   const toggle = (id: string) => {
@@ -76,7 +76,7 @@ export function LaunchChecklistSection() {
   const categories = Array.from(new Set(CHECKLIST.map(i => i.category)));
 
   const autoChecked: Record<string, boolean> = {};
-  if (supabaseOk === true) autoChecked['supabase'] = true;
+  if (backendHealth?.state === 'online') autoChecked['supabase'] = true;
 
   const effectiveChecked = (id: string) => autoChecked[id] || checked[id] || false;
   const effectiveDone = CHECKLIST.filter(i => effectiveChecked(i.id)).length;
@@ -118,11 +118,11 @@ export function LaunchChecklistSection() {
       </div>
 
       {/* Supabase status */}
-      <div className={`px-4 py-3 rounded-xl border flex items-center gap-3 text-sm ${supabaseOk === true ? 'bg-green-50 border-green-200 text-green-800' : supabaseOk === false ? 'bg-red-50 border-red-200 text-red-800' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
-        {supabaseOk === null ? <span className="animate-pulse">Checking Supabase connection…</span>
-          : supabaseOk
-          ? <><CheckCircle2 className="w-4 h-4 flex-shrink-0" /> <span>Supabase connected and accessible</span></>
-          : <><AlertTriangle className="w-4 h-4 flex-shrink-0" /> <span>Supabase not reachable — check environment variables</span></>
+      <div className={`px-4 py-3 rounded-xl border flex items-start gap-3 text-sm ${backendHealth?.state === 'online' ? 'bg-green-50 border-green-200 text-green-800' : backendHealth ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+        {!backendHealth ? <span className="animate-pulse">Checking all required backend services…</span>
+          : backendHealth.state === 'online'
+          ? <><CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" /> <div><strong>Supabase fully ready</strong><p className="text-xs mt-0.5">{backendHealth.message}</p></div></>
+          : <><AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" /><div className="flex-1"><strong>{backendHealth.state === 'local' ? 'Local mode active' : 'Supabase needs attention'}</strong><p className="text-xs mt-0.5 leading-relaxed">{backendHealth.message}</p>{backendHealth.failedServices.length > 0 && <p className="text-xs mt-1 font-semibold">Missing or unreachable: {backendHealth.failedServices.join(', ')}</p>}<button type="button" onClick={() => { setBackendHealth(null); checkBackendHealth().then(setBackendHealth); }} className="mt-2 underline font-semibold">Run check again</button></div></>
         }
       </div>
 

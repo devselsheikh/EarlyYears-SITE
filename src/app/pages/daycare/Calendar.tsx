@@ -83,6 +83,8 @@ export default function DaycareCalendar() {
     <div className="min-h-screen bg-white">
       <DaycareNav />
 
+      <main>
+
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-yellow-50 to-teal-50 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -275,6 +277,7 @@ export default function DaycareCalendar() {
         </div>
       </div>
 
+      </main>
       <DaycareFooter />
     </div>
   );

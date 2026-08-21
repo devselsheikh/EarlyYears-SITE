@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import daycareLogo from '../../imports/EY_Daycare.png';
+import DaycareLogo from './DaycareLogo';
 
 const NAV_ITEMS = [
   { path: '/daycare', label: 'Home' },
@@ -27,7 +27,7 @@ export default function DaycareNav() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center self-center group flex-shrink-0">
-            <img src={daycareLogo} alt="Early Years — The Daycare" className="h-10 w-auto max-w-[160px] object-contain object-left transition-transform group-hover:scale-105" />
+            <DaycareLogo className="h-10 w-auto max-w-[160px] transition-transform group-hover:scale-[1.03]" />
           </Link>
 
           {/* Desktop Nav */}
@@ -68,7 +68,9 @@ export default function DaycareNav() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2.5 rounded-xl text-gray-600 hover:bg-peach-50 transition-colors"
+            className="lg:hidden min-h-11 min-w-11 p-2.5 rounded-xl text-gray-600 hover:bg-peach-50 transition-colors"
+            aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

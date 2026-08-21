@@ -3,14 +3,12 @@ import { Link } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Send, CheckCircle, Phone, Mail } from 'lucide-react';
 import {
-  sendDaycareViaWeb3Forms,
-  sendEduHubViaWeb3Forms,
   DAYCARE_RECIPIENT_EMAIL,
   EDUHUB_RECIPIENT_EMAIL,
   createMailtoLink,
 } from '../utils/emailService';
 import { insertSubmission } from '../data/cms';
-import earlyYearsLogo from '../../imports/EY_Daycare.png';
+import DaycareLogo from '../components/DaycareLogo';
 import EduHubLogo from '../components/EduHubLogo';
 
 /* ─── Shared spinner ─────────────────────────────────────── */
@@ -34,7 +32,7 @@ function SuccessBanner({ message, steps, onReset }: { message: string; steps: st
       <CheckCircle className="w-14 h-14 text-green-500" />
       <p className="text-gray-800 leading-relaxed max-w-xs">{message}</p>
       <div className="w-full text-left bg-gray-50 rounded-2xl p-4 space-y-3">
-        <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">What happens next</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-2">What happens next</p>
         {steps.map((step, i) => (
           <div key={i} className="flex items-start gap-3 text-sm text-gray-700">
             <span className="w-5 h-5 rounded-full bg-green-100 text-green-700 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
@@ -63,18 +61,18 @@ function DaycarePanel() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const result = await sendDaycareViaWeb3Forms({
+      const payload = {
         subject: `Daycare Enquiry — ${form.name}`,
-        from_name: form.name,
+        name: form.name,
         email: form.email,
         phone: form.phone,
-        child_age: form.childAge || 'Not specified',
+        childAge: form.childAge || 'Not specified',
         message: form.message || 'No message provided',
-        submitted_at: new Date().toLocaleString(),
-        form_type: 'Split Contact — Daycare',
-      });
-      if (result.success) {
-        insertSubmission('daycare', { name: form.name, email: form.email, phone: form.phone, childAge: form.childAge || 'Not specified', message: form.message || 'No message provided' }).catch(() => {});
+        submittedAt: new Date().toISOString(),
+        source: 'Split Contact — Daycare',
+      };
+      const receipt = await insertSubmission('daycare', payload);
+      if (receipt.cloudSaved) {
         setDone(true);
       } else {
         const mailtoUrl = createMailtoLink(
@@ -101,7 +99,7 @@ function DaycarePanel() {
       {/* Panel header */}
       <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-teal-50 px-7 pt-8 pb-6 rounded-t-2xl border-b border-orange-100">
         <div className="flex items-center gap-2 mb-1">
-          <img src={earlyYearsLogo} alt="Early Years" className="h-8 w-auto" />
+          <DaycareLogo className="h-8 w-auto" />
           <span className="inline-block px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wide">For Parents</span>
         </div>
         <h2 className="text-gray-900 mb-1" style={{ fontSize: '1.35rem', fontWeight: 700 }}>Early Years Daycare</h2>
@@ -132,26 +130,26 @@ function DaycarePanel() {
           ) : (
             <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className={labelCls}>Parent / Guardian Name *</label>
-                <input required name="name" value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} placeholder="Your name" />
+                <label htmlFor="split-daycare-name" className={labelCls}>Parent / Guardian Name *</label>
+                <input id="split-daycare-name" required name="name" value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} placeholder="Your name" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={labelCls}>Email *</label>
-                  <input required type="email" name="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="you@example.com" />
+                  <label htmlFor="split-daycare-email" className={labelCls}>Email *</label>
+                  <input id="split-daycare-email" required type="email" name="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="you@example.com" />
                 </div>
                 <div>
-                  <label className={labelCls}>Phone *</label>
-                  <input required type="tel" name="phone" value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} placeholder="+20 XXX XXX XXXX" />
+                  <label htmlFor="split-daycare-phone" className={labelCls}>Phone *</label>
+                  <input id="split-daycare-phone" required type="tel" name="phone" value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} placeholder="+20 XXX XXX XXXX" />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Child's Age</label>
-                <input name="child_age" value={form.childAge} onChange={e => set('childAge', e.target.value)} className={inputCls} placeholder="e.g. 2 years, 18 months" />
+                <label htmlFor="split-daycare-age" className={labelCls}>Child's Age</label>
+                <input id="split-daycare-age" name="child_age" value={form.childAge} onChange={e => set('childAge', e.target.value)} className={inputCls} placeholder="e.g. 2 years, 18 months" />
               </div>
               <div>
-                <label className={labelCls}>Message or Questions</label>
-                <textarea name="message" rows={4} value={form.message} onChange={e => set('message', e.target.value)} className={`${inputCls} resize-none`} placeholder="Tell us about your child or anything you'd like to know…" />
+                <label htmlFor="split-daycare-message" className={labelCls}>Message or Questions</label>
+                <textarea id="split-daycare-message" name="message" rows={4} value={form.message} onChange={e => set('message', e.target.value)} className={`${inputCls} resize-none`} placeholder="Tell us about your child or anything you'd like to know…" />
               </div>
               <button
                 type="submit"
@@ -160,7 +158,7 @@ function DaycarePanel() {
               >
                 {submitting ? <Spinner /> : <><Send className="w-4 h-4" /> Send to Early Years</>}
               </button>
-              <p className="text-xs text-gray-400 text-center">We'll confirm within 24 hours.</p>
+              <p className="text-xs text-gray-600 text-center">We'll confirm within 24 hours.</p>
             </motion.form>
           )}
         </AnimatePresence>
@@ -183,18 +181,18 @@ function EduHubPanel() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const result = await sendEduHubViaWeb3Forms({
+      const payload = {
         subject: `EduHub Enquiry — ${form.name}`,
-        from_name: form.name,
+        name: form.name,
         email: form.email,
         phone: form.phone,
         qualification: form.qualification || 'Not specified',
         message: form.message || 'No message provided',
-        submitted_at: new Date().toLocaleString(),
-        form_type: 'Split Contact — EduHub',
-      });
-      if (result.success) {
-        insertSubmission('eduhub', { name: form.name, email: form.email, phone: form.phone, qualification: form.qualification || 'Not specified', message: form.message || 'No message provided' }).catch(() => {});
+        submittedAt: new Date().toISOString(),
+        source: 'Split Contact — EduHub',
+      };
+      const receipt = await insertSubmission('eduhub', payload);
+      if (receipt.cloudSaved) {
         setDone(true);
       } else {
         const mailtoUrl = createMailtoLink(
@@ -221,7 +219,7 @@ function EduHubPanel() {
       {/* Panel header */}
       <div className="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 px-7 pt-8 pb-6 rounded-t-2xl border-b border-blue-700">
         <div className="flex items-center gap-2 mb-1">
-          <EduHubLogo className="h-8 w-auto" />
+          <EduHubLogo variant="white" className="h-8 w-auto" />
           <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/15 text-blue-100 text-xs font-bold uppercase tracking-wide border border-white/20">For Educators</span>
         </div>
         <h2 className="text-white mb-1" style={{ fontSize: '1.35rem', fontWeight: 700 }}>EduHub Training</h2>
@@ -252,22 +250,22 @@ function EduHubPanel() {
           ) : (
             <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className={labelCls}>Full Name *</label>
-                <input required name="name" value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} placeholder="Your full name" />
+                <label htmlFor="split-eduhub-name" className={labelCls}>Full Name *</label>
+                <input id="split-eduhub-name" required name="name" value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} placeholder="Your full name" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={labelCls}>Email *</label>
-                  <input required type="email" name="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="you@example.com" />
+                  <label htmlFor="split-eduhub-email" className={labelCls}>Email *</label>
+                  <input id="split-eduhub-email" required type="email" name="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} placeholder="you@example.com" />
                 </div>
                 <div>
-                  <label className={labelCls}>Phone *</label>
-                  <input required type="tel" name="phone" value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} placeholder="+20 XXX XXX XXXX" />
+                  <label htmlFor="split-eduhub-phone" className={labelCls}>Phone *</label>
+                  <input id="split-eduhub-phone" required type="tel" name="phone" value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} placeholder="+20 XXX XXX XXXX" />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Interested Program</label>
-                <select name="qualification" value={form.qualification} onChange={e => set('qualification', e.target.value)} className={inputCls}>
+                <label htmlFor="split-eduhub-qualification" className={labelCls}>Interested Program</label>
+                <select id="split-eduhub-qualification" name="qualification" value={form.qualification} onChange={e => set('qualification', e.target.value)} className={inputCls}>
                   <option value="">Select a program (optional)</option>
                   <option value="level-2">CACHE Level 2 — Caring for Children</option>
                   <option value="level-3">CACHE Level 3 — Early Years Workforce</option>
@@ -276,8 +274,8 @@ function EduHubPanel() {
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Message or Questions</label>
-                <textarea name="message" rows={4} value={form.message} onChange={e => set('message', e.target.value)} className={`${inputCls} resize-none`} placeholder="Tell us about your background or what you'd like to know…" />
+                <label htmlFor="split-eduhub-message" className={labelCls}>Message or Questions</label>
+                <textarea id="split-eduhub-message" name="message" rows={4} value={form.message} onChange={e => set('message', e.target.value)} className={`${inputCls} resize-none`} placeholder="Tell us about your background or what you'd like to know…" />
               </div>
               <button
                 type="submit"
@@ -286,7 +284,7 @@ function EduHubPanel() {
               >
                 {submitting ? <Spinner /> : <><Send className="w-4 h-4" /> Send to EduHub</>}
               </button>
-              <p className="text-xs text-gray-400 text-center">We'll respond within 24–48 hours.</p>
+              <p className="text-xs text-gray-600 text-center">We'll respond within 24–48 hours.</p>
             </motion.form>
           )}
         </AnimatePresence>
@@ -311,9 +309,11 @@ export default function ContactSplit() {
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Home
         </Link>
-        <img src={earlyYearsLogo} alt="Early Years Company" className="h-10 w-auto" />
+        <DaycareLogo company className="h-10 w-auto" />
         <div className="w-24" /> {/* spacer for balance */}
       </header>
+
+      <main>
 
       {/* ── Intro ── */}
       <div className="text-center pt-10 pb-8 px-4">
@@ -321,7 +321,7 @@ export default function ContactSplit() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2"
+          className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-2"
         >
           Get in Touch
         </motion.p>
@@ -360,7 +360,7 @@ export default function ContactSplit() {
           {/* Divider on mobile */}
           <div className="md:hidden flex items-center gap-3">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs text-gray-400 font-semibold">OR</span>
+            <span className="text-xs text-gray-600 font-semibold">OR</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
@@ -370,10 +370,11 @@ export default function ContactSplit() {
           </div>
         </motion.div>
       </div>
+      </main>
 
       {/* ── Footer strip ── */}
       <footer className="border-t border-gray-100 py-5 text-center">
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-600">
           © 2026 Early Years Company · <a href="mailto:info@theearlyyearscompany.com" className="hover:text-gray-600 transition-colors">info@theearlyyearscompany.com</a>
         </p>
       </footer>

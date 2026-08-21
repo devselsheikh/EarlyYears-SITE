@@ -56,18 +56,22 @@ export default function DaycareContact() {
 
     try {
       // 1. Always save to Supabase
-      await insertSubmission('daycare', payload);
+      const receipt = await insertSubmission('daycare', payload);
+      let delivered = receipt.cloudSaved;
 
       // 2. If webhook configured, POST there too
       if (fs.emailEndpointEnabled && fs.daycareEndpoint) {
-        await postToWebhook(fs.daycareEndpoint, payload);
+        const webhook = await postToWebhook(fs.daycareEndpoint, payload);
+        delivered ||= webhook.success;
       }
+
+      if (!delivered) throw new Error(receipt.error || 'No delivery channel accepted the enquiry.');
 
       setSubmitStatus('success');
       setFormData({ name: "", email: "", phone: "", childAge: "", tourDate: "", message: "" });
     } catch (err) {
       console.error('Daycare form error:', err);
-      setErrorMsg('Something went wrong saving your enquiry. Please try again or call us directly.');
+      setErrorMsg('Your details were kept safely on this device, but could not be delivered. Please try again or call us directly.');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -77,6 +81,8 @@ export default function DaycareContact() {
   return (
     <div className="min-h-screen bg-white">
       <DaycareNav />
+
+      <main>
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-yellow-50 to-teal-50 py-16 sm:py-20 lg:py-32">
@@ -105,8 +111,8 @@ export default function DaycareContact() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Information */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
@@ -216,8 +222,8 @@ export default function DaycareContact() {
 
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
@@ -393,7 +399,7 @@ export default function DaycareContact() {
                     )}
                   </button>
 
-                  <p className="text-sm text-gray-500 text-center">
+                  <p className="text-sm text-gray-700 text-center">
                     We'll confirm your tour within 24 hours
                   </p>
                 </form>
@@ -475,6 +481,7 @@ export default function DaycareContact() {
         </div>
       </div>
 
+      </main>
       <DaycareFooter />
     </div>
   );

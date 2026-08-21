@@ -172,6 +172,8 @@ export default function EduHubHome() {
       ]} />
       <EduHubNav />
 
+      <main>
+
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#0d2c6b] via-[#1349D1] to-[#1a5cff] py-20 lg:py-32">
         {/* Grid overlay */}
@@ -611,6 +613,7 @@ export default function EduHubHome() {
         </div>
       </section>
 
+      </main>
       <EduHubFooter />
     </div>
   );

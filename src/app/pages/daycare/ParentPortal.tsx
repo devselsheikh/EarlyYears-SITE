@@ -7,14 +7,14 @@ import {
 } from 'lucide-react';
 import DaycareNav from '../../components/DaycareNav';
 import DaycareFooter from '../../components/DaycareFooter';
-import { supabase } from '../../utils/supabase/client';
+import { supabase, supabaseConfigured } from '../../utils/supabase/client';
 import { useCMS } from '../../hooks/useCMS';
 import type { CMSCalendarEvent, CMSPortalFile, CMSMeals } from '../../data/cms';
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
 const SESSION_KEY = 'ey_parent_portal_auth';
-const FALLBACK_PIN = '2026';
+const LOCAL_PORTAL_PIN = import.meta.env.VITE_PARENT_PORTAL_PIN?.trim() || (import.meta.env.DEV ? '2026' : '');
 
 // ─── Pin Gate ─────────────────────────────────────────────────────────────────
 
@@ -29,13 +29,19 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
     setError('');
     setChecking(true);
     try {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'parent_portal_pin')
-        .single();
-      const correctPin = (data as { value: string } | null)?.value ?? FALLBACK_PIN;
-      if (pin.trim() === correctPin.trim()) {
+      let accepted = false;
+      if (supabaseConfigured) {
+        const verification = supabase.rpc('verify_parent_portal_pin', { candidate_pin: pin.trim() });
+        const result = await Promise.race([
+          verification,
+          new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('Portal verification timed out')), 5_000)),
+        ]);
+        if (result.error) throw result.error;
+        accepted = result.data === true;
+      } else {
+        accepted = Boolean(LOCAL_PORTAL_PIN && pin.trim() === LOCAL_PORTAL_PIN);
+      }
+      if (accepted) {
         sessionStorage.setItem(SESSION_KEY, '1');
         onSuccess();
       } else {
@@ -43,20 +49,14 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
         setPin('');
       }
     } catch {
-      if (pin.trim() === FALLBACK_PIN) {
-        sessionStorage.setItem(SESSION_KEY, '1');
-        onSuccess();
-      } else {
-        setError('Incorrect PIN. Please check with the nursery team.');
-        setPin('');
-      }
+      setError('The portal could not verify access right now. Please retry or contact the nursery team.');
     } finally {
       setChecking(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-peach-50 via-white to-coral-50 flex items-center justify-center p-4">
+    <main className="min-h-screen bg-gradient-to-br from-peach-50 via-white to-coral-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -77,12 +77,13 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
           {/* Body */}
           <div className="px-8 py-7 space-y-5">
             <p className="text-sm text-gray-500 text-center leading-relaxed">
-              This private space is for enrolled families only. Enter the PIN shared by the nursery team.
+              This shared information space is for approved families. No individual child profile is required—enter the PIN supplied by the nursery team.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <input
+                  aria-label="Parent Portal PIN"
                   type="password"
                   value={pin}
                   onChange={e => setPin(e.target.value)}
@@ -115,9 +116,9 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
               </button>
             </form>
 
-            <p className="text-xs text-gray-400 text-center">
+            <p className="text-xs text-gray-600 text-center">
               Need your PIN?{' '}
-              <a href="/daycare/contact" className="text-peach-500 hover:underline font-medium">Contact us</a>
+              <a href="/daycare/contact" className="text-orange-700 hover:underline font-medium">Contact us</a>
             </p>
           </div>
         </div>
@@ -136,7 +137,7 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
           ))}
         </div>
       </motion.div>
-    </div>
+    </main>
   );
 }
 
@@ -183,6 +184,8 @@ function PortalContent({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="min-h-screen bg-[#faf9f7]">
       <DaycareNav />
+
+      <main>
 
       {/* Portal header */}
       <div className="bg-gradient-to-br from-peach-400 via-coral-500 to-pink-500 relative overflow-hidden">
@@ -251,6 +254,7 @@ function PortalContent({ onLogout }: { onLogout: () => void }) {
           </motion.div>
         </AnimatePresence>
       </div>
+      </main>
 
       <DaycareFooter />
     </div>

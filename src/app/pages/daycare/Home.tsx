@@ -35,7 +35,6 @@ import { Link } from "react-router";
 import DaycareNav from "../../components/DaycareNav";
 import DaycareFooter from "../../components/DaycareFooter";
 import { SitePopup } from "../../components/SitePopup";
-import { ImageWithFallback } from "../../components/figma/ImageWithFallback";
 import ManagedImage from "../../components/ManagedImage";
 import FAQSection from "../../components/daycare/FAQSection";
 import Testimonials from "../../components/daycare/Testimonials";
@@ -332,6 +331,17 @@ const DAY_TIMELINE = [
   },
 ];
 
+const DAY_TIMELINE_IMAGE_KEYS = [
+  'daycare.hero',
+  'daycare.about.mission',
+  'daycare.gallery.classroom',
+  'daycare.gallery.playground',
+  'daycare.gallery.sensory',
+  'daycare.gallery.dining',
+  'daycare.gallery.reading',
+  'daycare.section.classroom-2',
+] as const;
+
 // ─── Educator Profiles ──────────────────────────────────────────
 const EDUCATORS = [
   {
@@ -612,7 +622,8 @@ function DaySection() {
                           {/* Photo panel */}
                           {step.photo && (
                             <div className="md:col-span-2 relative min-h-[160px]">
-                              <ImageWithFallback
+                              <ManagedImage
+                                assetKey={DAY_TIMELINE_IMAGE_KEYS[i]}
                                 src={step.photo}
                                 alt={step.label}
                                 className="w-full h-full object-cover min-h-[160px]"
@@ -735,6 +746,8 @@ export default function DaycareHome() {
       <SitePopup site="daycare" />
       <DaycareNav />
 
+      <main>
+
       {/* ══════════════════════════════════════════════════════════
           HERO — What? Where? Why trust?
       ══════════════════════════════════════════════════════════ */}
@@ -750,9 +763,7 @@ export default function DaycareHome() {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left */}
             <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
+              initial={false}
             >
               {/* Trust badge */}
               <motion.div
@@ -839,9 +850,7 @@ export default function DaycareHome() {
 
             {/* Right — hero image */}
             <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
+              initial={false}
               className="relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
@@ -850,6 +859,8 @@ export default function DaycareHome() {
                   src={image_IMG_20211012_WA0027}
                   alt="Children arriving happily at Early Years daycare"
                   className="w-full aspect-[4/3] object-cover"
+                  loading="eager"
+                  fetchPriority="high"
                 />
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -1100,7 +1111,7 @@ export default function DaycareHome() {
               href="https://maps.app.goo.gl/JYf4tcxn6CyofMWU6"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-orange-600 font-semibold hover:text-orange-700 transition-colors"
+              className="inline-flex min-h-11 items-center text-sm text-orange-800 font-semibold hover:text-orange-900 transition-colors"
             >
               Open in Google Maps ↗
             </a>
@@ -1158,7 +1169,7 @@ export default function DaycareHome() {
           </div>
 
           {/* Mobile: horizontal snap carousel */}
-          <div className="sm:hidden -mx-4 px-4 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-4" style={{ scrollbarWidth: 'none' }}>
+          <div tabIndex={0} aria-label="Daycare programs carousel" className="sm:hidden -mx-4 px-4 overflow-x-auto snap-x snap-mandatory flex gap-4 pb-4" style={{ scrollbarWidth: 'none' }}>
             {programs.map((prog, i) => (
               <div
                 key={i}
@@ -1809,16 +1820,17 @@ export default function DaycareHome() {
         </div>
       </section>
 
+      </main>
       <DaycareFooter />
 
       {/* ── Sticky mobile action bar (hidden on lg+) ── */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
+      <nav aria-label="Mobile contact actions" className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
         <div className="flex items-stretch">
           <a
             href="https://wa.me/201234567890"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-green-500 text-white active:bg-green-600 transition-colors min-h-[56px]"
+            className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-green-700 text-white active:bg-green-800 transition-colors min-h-[56px]"
             aria-label="Chat on WhatsApp"
           >
             <MessageCircle className="w-5 h-5" />
@@ -1829,7 +1841,7 @@ export default function DaycareHome() {
           <div className="w-px bg-white/30" />
           <Link
             to="/daycare/contact"
-            className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-orange-500 text-white active:bg-orange-600 transition-colors min-h-[56px]"
+            className="flex-1 flex flex-col items-center justify-center gap-1 py-3 bg-orange-700 text-white active:bg-orange-800 transition-colors min-h-[56px]"
             aria-label="Book a tour"
           >
             <Calendar className="w-5 h-5" />
@@ -1854,7 +1866,7 @@ export default function DaycareHome() {
             paddingBottom: "env(safe-area-inset-bottom)",
           }}
         />
-      </div>
+      </nav>
 
       {/* Bottom padding so footer isn't hidden behind sticky bar on mobile */}
       <div className="lg:hidden h-16" />

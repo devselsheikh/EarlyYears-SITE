@@ -1,7 +1,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Global Asset Manifest — semantic keys for every replaceable site image.
 // This file is the source of truth for keys and bundled fallback URLs.
-// Supabase global_assets overrides these at runtime for published content.
+// Static public slots resolve to bundled files. Dynamic profile records may
+// provide a remote portrait URL, with the matching local slot as their fallback.
 //
 // Required Supabase tables:
 //   global_assets (key TEXT PK, name TEXT, draft_url TEXT, published_url TEXT,
@@ -60,7 +61,7 @@ export const ALUMNI_KEYS: Record<string, string> = {
 };
 
 // ─── Full manifest ────────────────────────────────────────────────────────────
-export const ASSET_MANIFEST: Record<string, AssetEntry> = {
+const ASSET_DEFINITIONS: Record<string, AssetEntry> = {
 
   // ── Daycare: Hero ──────────────────────────────────────────────────────────
   'daycare.hero': {
@@ -193,7 +194,7 @@ export const ASSET_MANIFEST: Record<string, AssetEntry> = {
     key: 'daycare.testimonial.dina',
     name: 'Dina Youssef Avatar',
     category: 'daycare-testimonials',
-    fallbackUrl: 'https://images.unsplash.com/photo-1567680148642-ac49a46543d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200',
+    fallbackUrl: 'https://images.unsplash.com/photo-1564429238817-393bd4286b2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=200',
     alt: 'Dina Youssef, parent',
     usageLocations: ['Testimonials Carousel'],
   },
@@ -318,6 +319,17 @@ export const ASSET_MANIFEST: Record<string, AssetEntry> = {
     usageLocations: ['EduHub Alumni Spotlights'],
   },
 };
+
+const localFallbackPath = (key: string) =>
+  `/images/slots/${key}.${key === 'daycare.educator.lamia' ? 'png' : 'jpg'}`;
+
+/** Public static fallbacks are always bundled semantic slots. */
+export const ASSET_MANIFEST: Record<string, AssetEntry> = Object.fromEntries(
+  Object.entries(ASSET_DEFINITIONS).map(([key, entry]) => [
+    key,
+    { ...entry, fallbackUrl: localFallbackPath(key) },
+  ]),
+);
 
 /** Resolve an asset key to its bundled fallback URL */
 export function getFallbackUrl(key: string): string {

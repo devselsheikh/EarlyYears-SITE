@@ -3,7 +3,7 @@ import { Award, Users, Target, Building2 } from 'lucide-react';
 import { Link } from 'react-router';
 import EduHubNav from '../../components/EduHubNav';
 import EduHubFooter from '../../components/EduHubFooter';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import ManagedImage from '../../components/ManagedImage';
 
 export default function EduHubAbout() {
   const team = [
@@ -38,6 +38,8 @@ export default function EduHubAbout() {
     <div className="min-h-screen bg-white">
       <EduHubNav />
 
+      <main>
+
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,8 +64,8 @@ export default function EduHubAbout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
@@ -90,15 +92,15 @@ export default function EduHubAbout() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
               <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwdHJhaW5pbmclMjBjbGFzc3Jvb218ZW58MHx8fHwxNzM2MzU1MjAyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                <ManagedImage
+                  assetKey="eduhub.about.hero"
                   alt="EduHub training centre"
                   className="w-full h-full object-cover"
                 />
@@ -275,15 +277,15 @@ export default function EduHubAbout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="relative"
             >
               <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-                <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwdHJhaW5pbmclMjBncm91cHxlbnwwfHx8fDE3MzYzNTUyMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                <ManagedImage
+                  assetKey="eduhub.about.team"
                   alt="Professional educators in training"
                   className="w-full h-full object-cover"
                 />
@@ -291,8 +293,8 @@ export default function EduHubAbout() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
@@ -358,6 +360,7 @@ export default function EduHubAbout() {
         </div>
       </div>
 
+      </main>
       <EduHubFooter />
     </div>
   );

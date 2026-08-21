@@ -15,7 +15,7 @@ export default function EduHubFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* About */}
           <div className="md:col-span-2">
-            <EduHubLogo className="h-10 w-auto mb-4" />
+            <EduHubLogo variant="white" className="h-10 w-auto mb-4" />
             <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               First CACHE-approved training centre in Egypt. UK-accredited professional development for early years educators.
             </p>
@@ -23,7 +23,7 @@ export default function EduHubFooter() {
               {s.eduhubEmail && (
                 <div className="flex items-center text-sm text-gray-400">
                   <Mail className="w-4 h-4 mr-2 text-[#1349D1] flex-shrink-0" />
-                  <a href={`mailto:${s.eduhubEmail}`} className="hover:text-[#1349D1] transition-colors">
+                  <a href={`mailto:${s.eduhubEmail}`} className="inline-flex min-h-11 items-center hover:text-[#1349D1] transition-colors">
                     {s.eduhubEmail}
                   </a>
                 </div>
@@ -31,30 +31,30 @@ export default function EduHubFooter() {
               {s.eduhubPhone && (
                 <div className="flex items-center text-sm text-gray-400">
                   <Phone className="w-4 h-4 mr-2 text-[#1349D1] flex-shrink-0" />
-                  <a href={`tel:${s.eduhubPhone.replace(/\s/g, '')}`} className="hover:text-[#1349D1] transition-colors">
+                  <a href={`tel:${s.eduhubPhone.replace(/\s/g, '')}`} className="inline-flex min-h-11 items-center hover:text-[#1349D1] transition-colors">
                     {s.eduhubPhone}
                   </a>
                 </div>
               )}
               {s.mainEmail && s.mainEmail !== s.eduhubEmail && (
-                <div className="text-xs text-gray-500 mt-3">
-                  General: <a href={`mailto:${s.mainEmail}`} className="text-gray-400 hover:text-[#1349D1] transition-colors">{s.mainEmail}</a>
+                <div className="text-xs text-gray-300 mt-3">
+                  General: <a href={`mailto:${s.mainEmail}`} className="inline-flex min-h-11 items-center text-gray-400 hover:text-[#1349D1] transition-colors">{s.mainEmail}</a>
                 </div>
               )}
               {(s.linkedinUrl || s.instagramUrl || waLink) && (
                 <div className="flex items-center gap-3 pt-2">
                   {s.linkedinUrl && (
-                    <a href={s.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#1349D1] transition-colors">
+                    <a aria-label="LinkedIn" href={s.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center text-gray-500 hover:text-[#1349D1] transition-colors">
                       <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {s.instagramUrl && (
-                    <a href={s.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#1349D1] transition-colors">
+                    <a aria-label="Instagram" href={s.instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center text-gray-500 hover:text-[#1349D1] transition-colors">
                       <Instagram className="w-4 h-4" />
                     </a>
                   )}
                   {waLink && (
-                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="text-xs text-green-500 hover:text-green-400 font-medium transition-colors">
+                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-xs text-green-500 hover:text-green-400 font-medium transition-colors">
                       WhatsApp
                     </a>
                   )}
@@ -67,9 +67,9 @@ export default function EduHubFooter() {
           <div>
             <h3 className="text-sm font-bold text-white mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link to="/eduhub/programs" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">All Programmes</Link></li>
-              <li><Link to="/eduhub/about" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">About EduHub</Link></li>
-              <li><Link to="/eduhub/contact" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Enrolment Support</Link></li>
+              <li><Link to="/eduhub/programs" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">All Programmes</Link></li>
+              <li><Link to="/eduhub/about" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">About EduHub</Link></li>
+              <li><Link to="/eduhub/contact" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Enrolment Support</Link></li>
             </ul>
           </div>
 
@@ -77,13 +77,13 @@ export default function EduHubFooter() {
           <div>
             <h3 className="text-sm font-bold text-white mb-4">Resources</h3>
             <ul className="space-y-2">
-              <li><Link to="/blog?stream=educators" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Educator Blog</Link></li>
+              <li><Link to="/blog?stream=educators" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Educator Blog</Link></li>
               <li>
-                <a href="https://www.ncfe.org.uk/qualification-search/qualification-detail/cache-level-3-diploma-for-the-early-years-workforce-early-years-educator-601-2617-0" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">
+                <a href="https://www.ncfe.org.uk/qualification-search/qualification-detail/cache-level-3-diploma-for-the-early-years-workforce-early-years-educator-601-2617-0" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">
                   CACHE / NCFE Accreditation ↗
                 </a>
               </li>
-              <li><Link to="/contact" className="text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Contact Us</Link></li>
+              <li><Link to="/contact" className="inline-flex min-h-11 items-center text-sm text-gray-400 hover:text-[#1349D1] transition-colors">Contact Us</Link></li>
             </ul>
           </div>
         </div>

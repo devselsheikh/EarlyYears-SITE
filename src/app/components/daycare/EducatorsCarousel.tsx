@@ -213,17 +213,15 @@ export default function EducatorsCarousel({ educators }: { educators: Educator[]
               aria-selected={i === activeIndex}
               aria-label={`Go to ${ed.name}`}
               onClick={() => scrollTo(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === activeIndex
-                  ? 'w-6 h-2 bg-peach-400'
-                  : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
-              }`}
-            />
+              className="grid h-11 w-11 place-items-center rounded-full"
+            >
+              <span aria-hidden="true" className={`block rounded-full transition-[width,background-color] duration-200 ${i === activeIndex ? 'w-6 h-2 bg-peach-500' : 'w-2 h-2 bg-gray-400'}`} />
+            </button>
           ))}
         </div>
 
         {/* ── Mobile swipe hint ── */}
-        <p className="md:hidden text-center text-xs text-gray-400 mt-3 select-none" aria-hidden="true">
+        <p className="md:hidden text-center text-xs text-gray-600 mt-1 select-none" aria-hidden="true">
           Swipe to explore →
         </p>
       </div>

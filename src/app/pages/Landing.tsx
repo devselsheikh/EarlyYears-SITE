@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { motion } from 'motion/react';
 import { ArrowRight, Star, GraduationCap, MapPin, MessageCircle, Phone, Mail, HelpCircle } from 'lucide-react';
-import LOGO_DAYCARE from '../../imports/EY_Daycare.png';
-import LOGO_EDUHUB from '@/imports/eduhublogo-1.png';
+import DaycareLogo from '../components/DaycareLogo';
+import EduHubLogo from '../components/EduHubLogo';
 import { useCMS } from '../hooks/useCMS';
 import { JsonLd, organizationSchema } from '../components/JsonLd';
 
@@ -23,7 +23,7 @@ export default function Landing() {
 
       {/* ── Minimal top bar ── */}
       <header className="flex items-center justify-between px-6 sm:px-10 lg:px-16 py-5 border-b border-gray-100">
-        <img src={LOGO_DAYCARE} alt="Early Years Company" className="h-14 sm:h-16 w-auto max-w-[220px] object-contain" />
+        <DaycareLogo company className="h-14 sm:h-16 w-auto max-w-[220px]" />
         <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600 font-medium">
           {s.linkedinUrl && <a href={s.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">LinkedIn</a>}
           {s.instagramUrl && <a href={s.instagramUrl} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">Instagram</a>}
@@ -34,7 +34,7 @@ export default function Landing() {
             href={waLink(s.whatsapp)}
             target="_blank"
             rel="noopener noreferrer"
-            className="md:hidden inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-green-500 text-white text-sm font-medium"
+            className="md:hidden inline-flex min-h-11 items-center gap-1.5 px-3 py-2 rounded-full bg-green-700 text-white text-sm font-semibold"
           >
             <MessageCircle className="w-4 h-4" />
             WhatsApp
@@ -122,7 +122,7 @@ export default function Landing() {
               <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-gradient-to-tr from-teal-200/30 to-transparent blur-3xl translate-y-1/2 -translate-x-1/2" />
 
               <div className="relative flex-1 flex flex-col">
-                <img src={LOGO_DAYCARE} alt="Early Years — The Daycare" className="h-14 w-auto max-w-[200px] object-contain mb-5 transition-transform group-hover:scale-105" />
+                <DaycareLogo className="h-14 w-auto max-w-[200px] mb-5 transition-transform group-hover:scale-[1.03]" />
                 <div className="inline-block px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-4 uppercase tracking-wide w-fit">
                   For Parents
                 </div>
@@ -141,7 +141,7 @@ export default function Landing() {
                   ))}
                 </ul>
                 <div className="mt-auto">
-                  <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white font-bold text-sm group-hover:bg-orange-600 transition-colors">
+                  <div className="inline-flex min-h-11 items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-700 text-white font-bold text-sm group-hover:bg-orange-800 transition-colors">
                     {cta.homepageDaycareLabel || 'Find Childcare'}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -170,7 +170,7 @@ export default function Landing() {
               <div className="absolute bottom-10 left-6 w-7 h-7 border-2 border-white/20 rounded" />
 
               <div className="relative flex-1 flex flex-col">
-                <img src={LOGO_EDUHUB} alt="EduHub" className="h-14 w-auto max-w-[200px] object-contain mb-5" />
+                <EduHubLogo variant="white" className="h-14 w-auto max-w-[200px] mb-5" />
                 <div className="inline-block px-3 py-1 rounded-full bg-white/10 text-blue-200 text-xs font-bold mb-4 uppercase tracking-wide border border-white/20 w-fit">
                   For Educators
                 </div>
@@ -216,13 +216,13 @@ export default function Landing() {
                 href={waLink(s.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-green-600 font-medium hover:text-green-700 transition-colors"
+                className="inline-flex min-h-11 items-center gap-1.5 text-green-800 font-semibold hover:text-green-900 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 WhatsApp us
               </a>
             )}
-            <Link to="/contact" className="inline-flex items-center gap-1.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+            <Link to="/contact" className="inline-flex min-h-11 items-center gap-1.5 text-blue-700 font-medium hover:text-blue-800 transition-colors">
               <Mail className="w-4 h-4" />
               Send a message
             </Link>
@@ -269,10 +269,10 @@ export default function Landing() {
       {/* ── Footer ── */}
       <footer className="border-t border-gray-100 px-6 sm:px-10 lg:px-16 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-400">{s.footerCopyright || '© 2026 Early Years Company. All rights reserved.'}</p>
-          <div className="flex flex-wrap gap-4 justify-center text-xs text-gray-400">
+          <p className="text-xs text-gray-600">{s.footerCopyright || '© 2026 Early Years Company. All rights reserved.'}</p>
+          <div className="flex flex-wrap gap-4 justify-center text-xs text-gray-600">
             {s.mainEmail && (
-              <a href={`mailto:${s.mainEmail}`} className="inline-flex items-center gap-1 hover:text-gray-600 transition-colors">
+              <a href={`mailto:${s.mainEmail}`} className="inline-flex min-h-11 items-center gap-1 hover:text-gray-900 transition-colors">
                 <Mail className="w-3.5 h-3.5" />
                 {s.mainEmail}
               </a>
@@ -288,7 +288,7 @@ export default function Landing() {
                 href={waLink(s.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors font-medium"
+                className="inline-flex min-h-11 items-center gap-1 text-green-800 hover:text-green-900 transition-colors font-semibold"
               >
                 <MessageCircle className="w-3.5 h-3.5" />
                 WhatsApp

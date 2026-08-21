@@ -132,6 +132,8 @@ export default function Blog() {
     <div className="min-h-screen bg-white">
       <DaycareNav />
 
+      <main>
+
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-peach-50 via-lemon-50 to-mint-50 py-16 sm:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -284,6 +286,7 @@ export default function Blog() {
         </div>
       </section>
 
+      </main>
       <DaycareFooter />
     </div>
   );

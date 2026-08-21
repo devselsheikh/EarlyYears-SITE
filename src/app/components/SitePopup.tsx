@@ -9,7 +9,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from '../utils/supabase/client';
+const supabaseConfigured = Boolean(import.meta.env.VITE_SUPABASE_URL?.trim() && import.meta.env.VITE_SUPABASE_ANON_KEY?.trim());
 
 interface SitePopupRow {
   id: string;
@@ -40,6 +40,8 @@ export function SitePopup({ site = 'all' }: SitePopupProps) {
     let timer: ReturnType<typeof setTimeout>;
 
     async function load() {
+      if (!supabaseConfigured) return;
+      const { supabase } = await import('../utils/supabase/client');
       try {
         const { data } = await supabase
           .from('site_popups')

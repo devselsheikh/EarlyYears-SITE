@@ -3,7 +3,7 @@ import { GraduationCap, Clock, DollarSign, MapPin, CheckCircle2, BookOpen, Users
 import { Link } from 'react-router';
 import EduHubNav from '../../components/EduHubNav';
 import EduHubFooter from '../../components/EduHubFooter';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import ManagedImage from '../../components/ManagedImage';
 
 export default function EduHubPrograms() {
   const programs = [
@@ -105,6 +105,8 @@ export default function EduHubPrograms() {
   return (
     <div className="min-h-screen bg-white">
       <EduHubNav />
+
+      <main>
 
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-20 lg:py-32">
@@ -337,11 +339,7 @@ export default function EduHubPrograms() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {[
-              'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwdHJhaW5pbmclMjBjbGFzc3Jvb218ZW58MHx8fHwxNzM2MzU1MjAyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-              'https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWFjaGVyJTIwdHJhaW5pbmclMjBncm91cHxlbnwwfHx8fDE3MzYzNTUyMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-              'https://images.unsplash.com/photo-1509062522246-3755977927d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjB0cmFpbmluZ3xlbnwwfHx8fDE3MzYzNTUyMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080'
-            ].map((src, index) => (
+            {['eduhub.about.hero', 'eduhub.about.team', 'eduhub.about.training'].map((assetKey, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -350,8 +348,8 @@ export default function EduHubPrograms() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all aspect-square"
               >
-                <ImageWithFallback
-                  src={src}
+                <ManagedImage
+                  assetKey={assetKey}
                   alt={`Training environment ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -386,6 +384,7 @@ export default function EduHubPrograms() {
         </div>
       </div>
 
+      </main>
       <EduHubFooter />
     </div>
   );

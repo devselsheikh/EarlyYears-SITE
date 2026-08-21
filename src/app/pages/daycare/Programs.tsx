@@ -136,6 +136,8 @@ export default function DaycarePrograms() {
     <div className="min-h-screen bg-white">
       <DaycareNav />
 
+      <main>
+
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative bg-gradient-to-br from-peach-50 via-lemon-50 to-mint-50 py-16 sm:py-20 overflow-hidden">
         <motion.div animate={{ y: [0, -18, 0] }} transition={{ duration: 8, repeat: Infinity }}
@@ -379,6 +381,7 @@ export default function DaycarePrograms() {
         </div>
       </section>
 
+      </main>
       <DaycareFooter />
     </div>
   );

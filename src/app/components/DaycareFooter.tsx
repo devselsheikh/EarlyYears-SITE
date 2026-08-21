@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { Mail, Phone, MapPin, Linkedin, Instagram } from 'lucide-react';
-import daycareLogo from '../../imports/EY_Daycare.png';
+import DaycareLogo from './DaycareLogo';
 import { useCMS } from '../hooks/useCMS';
 
 export default function DaycareFooter() {
@@ -15,7 +15,7 @@ export default function DaycareFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* About */}
           <div className="md:col-span-2">
-            <img src={daycareLogo} alt="Early Years - The Daycare" className="h-16 w-auto max-w-[220px] object-contain mb-4" />
+            <DaycareLogo className="h-16 w-auto max-w-[220px] mb-4" />
             <p className="text-sm text-gray-600 mb-4 leading-relaxed">
               25 years of expertise in Early Years education following the EYFS curriculum. Nurturing young minds with care, play, and learning.
             </p>
@@ -57,17 +57,17 @@ export default function DaycareFooter() {
               {(s.linkedinUrl || s.instagramUrl) && (
                 <div className="flex items-center gap-3 pt-1">
                   {s.linkedinUrl && (
-                    <a href={s.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-coral-500 transition-colors">
+                    <a aria-label="LinkedIn" href={s.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center text-gray-600 hover:text-coral-700 transition-colors">
                       <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {s.instagramUrl && (
-                    <a href={s.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-coral-500 transition-colors">
+                    <a aria-label="Instagram" href={s.instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center text-gray-600 hover:text-coral-700 transition-colors">
                       <Instagram className="w-4 h-4" />
                     </a>
                   )}
                   {s.whatsapp && (
-                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="text-xs text-green-600 hover:text-green-700 font-medium transition-colors">
+                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-xs text-green-800 hover:text-green-900 font-semibold transition-colors">
                       WhatsApp
                     </a>
                   )}
