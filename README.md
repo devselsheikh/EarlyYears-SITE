@@ -9,8 +9,9 @@ and private Owner/Admin/Teacher/Parent workspace foundation.
 1. Run `npm install`.
 2. Run `npm run dev`.
 
-Public website imagery is bundled under `public/images/slots`. Replacing the
-file for a semantic slot updates its uses without requiring Supabase. Dynamic
+Public website imagery is separated into `public/images/daycare` and
+`public/images/eduhub`. Replacing a file while keeping its semantic filename
+updates every use without requiring Supabase. Dynamic
 profiles such as educators, testimonials, and alumni may provide a remote image
 and always retain a local slot fallback.
 

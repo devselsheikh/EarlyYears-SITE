@@ -63,25 +63,9 @@ export interface WorkspaceData {
   savedAt: string;
 }
 
-const STORAGE_KEY = 'early-years.workspace.v1';
+const STORAGE_KEY = 'early-years.workspace.v2';
 
-const seedData: WorkspaceData = {
-  children: [
-    { id: 'child-amira', name: 'Amira Hassan', room: 'Sunflowers', classroomId: 'class-sunflowers', age: '3 years, 8 months', keyPerson: 'Sarah Al-Masri', guardian: 'Mariam Hassan', attendance: 'present', arrival: '8:14 AM', allergies: ['Peanuts'] },
-    { id: 'child-youssef', name: 'Youssef Karim', room: 'Sunflowers', classroomId: 'class-sunflowers', age: '4 years, 1 month', keyPerson: 'Sarah Al-Masri', guardian: 'Karim Ali', attendance: 'pending', allergies: [] },
-    { id: 'child-lina', name: 'Lina Mostafa', room: 'Butterflies', classroomId: 'class-butterflies', age: '2 years, 11 months', keyPerson: 'Nadia Hassan', guardian: 'Noha Ibrahim', attendance: 'absent', allergies: ['Dairy'] },
-  ],
-  updates: [
-    { id: 'update-1', childId: 'child-amira', author: 'Sarah Al-Masri', body: 'Amira confidently counted eight shells during today’s sensory activity.', createdAt: new Date(Date.now() - 55 * 60_000).toISOString(), kind: 'learning' },
-    { id: 'update-2', childId: 'child-amira', author: 'Early Years team', body: 'Lunch completed. Amira enjoyed the vegetable pasta and fruit.', createdAt: new Date(Date.now() - 25 * 60_000).toISOString(), kind: 'care' },
-  ],
-  messages: [
-    { id: 'message-1', childId: 'child-amira', sender: 'family', body: 'Amira slept well and is excited for music time today.', createdAt: new Date(Date.now() - 3 * 60 * 60_000).toISOString(), read: true },
-  ],
-  consents: { 'child-amira': { photos: true, localTrips: true, emergencyCare: true } },
-  dailyReports: [{ childId: 'child-amira', reportDate: new Date().toISOString().slice(0, 10), breakfast: 'all', lunch: 'most', snack: 'half', mealNotes: 'Enjoyed fruit and vegetable pasta.', waterRefills: 2, wetChanges: 2, soiledChanges: 1, diaperRequest: false, careNotes: 'Happy and engaged throughout the morning.', updatedAt: new Date().toISOString() }],
-  savedAt: new Date().toISOString(),
-};
+const seedData: WorkspaceData = { children: [], updates: [], messages: [], consents: {}, dailyReports: [], savedAt: new Date().toISOString() };
 const emptyCloudData = (): WorkspaceData => ({ children: [], updates: [], messages: [], consents: {}, dailyReports: [], savedAt: new Date().toISOString() });
 
 function readStore(): WorkspaceData {

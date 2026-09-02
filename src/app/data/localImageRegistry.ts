@@ -2,12 +2,8 @@
 // Local Image Registry — the single source of truth for every public image.
 //
 // HOW TO REPLACE AN IMAGE
-//   1. Open the Figma Make project.
-//   2. Attach the replacement image in the Make conversation.
-//   3. Import the new file and update the `desktop` (and optionally `mobile`)
-//      field in the relevant entry below.
-//   4. Adjust `alt`, `focalX`, `focalY` as needed.
-//   5. Publish the Figma Make site update.
+//   Replace the matching file in public/images/daycare or public/images/eduhub,
+//   keeping its semantic filename. Rebuild and publish the website.
 //
 // Every component that displays a public image must import from this registry
 // via ManagedImage (assetKey prop) — never hardcode image URLs in components.
@@ -15,8 +11,6 @@
 // Images marked "Manual upload required" have no local file yet.
 // Attach the original image in the Make conversation to embed it.
 // ─────────────────────────────────────────────────────────────────────────────
-
-import daycareHeroImg from '../../imports/IMG-20211012-WA0027.jpg';
 
 export interface RegistryEntry {
   /** Imported image module or external URL. Used for desktop / default display. */
@@ -40,7 +34,7 @@ export const LOCAL_IMAGE_REGISTRY: Record<string, RegistryEntry> = {
   // ── Daycare: Hero ──────────────────────────────────────────────────────────
 
   'daycare.hero': {
-    desktop: daycareHeroImg,
+    desktop: '/images/daycare/campus-original.jpg',
     alt: 'Children arriving happily at Early Years daycare',
     focalX: 0.5,
     focalY: 0.4,
@@ -110,7 +104,7 @@ export const LOCAL_IMAGE_REGISTRY: Record<string, RegistryEntry> = {
   // ── Daycare: Educators ─────────────────────────────────────────────────────
 
   'daycare.educator.nesrin': {
-    desktop: '/nesrin-hassanin.png',
+    desktop: '/images/daycare/team/nesreen-hassanin.jpg',
     alt: 'Nesrin Hassanin, Managing Director',
     focalX: 0.5,
     focalY: 0.2,
@@ -121,7 +115,7 @@ export const LOCAL_IMAGE_REGISTRY: Record<string, RegistryEntry> = {
   },
 
   'daycare.educator.lamia': {
-    desktop: '/lamia-hassanin.png',
+    desktop: '/images/daycare/team/lamia-hassanin.jpg',
     alt: 'Lamia Hassanin, Educational Coordinator',
     focalX: 0.5,
     focalY: 0.2,

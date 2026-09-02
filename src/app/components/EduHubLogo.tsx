@@ -1,5 +1,5 @@
-import eduhubLogo from '@/imports/eduhublogo.png';
-import eduhubLogoWhite from '@/imports/eduhublogo-white.png';
+const eduhubLogo = '/images/eduhub/logo.png';
+const eduhubLogoWhite = '/images/eduhub/logo-white.png';
 
 type EduHubLogoProps = {
   className?: string;

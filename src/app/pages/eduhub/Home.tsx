@@ -10,10 +10,11 @@ import {
 import { Link } from 'react-router';
 import EduHubNav from '../../components/EduHubNav';
 import EduHubFooter from '../../components/EduHubFooter';
-import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
+import { ImageWithFallback } from '../../components/media/ImageWithFallback';
 import ManagedImage from '../../components/ManagedImage';
 import { JsonLd, organizationSchema, educationalOrgSchema } from '../../components/JsonLd';
 import { ALUMNI_KEYS } from '../../data/assetManifest';
+import { SitePopup } from '../../components/SitePopup';
 
 // ─── Courses ──────────────────────────────────────────────────────
 const COURSES = [
@@ -133,10 +134,18 @@ const ALUMNI = [
 
 // ─── Accreditations ───────────────────────────────────────────────
 const ACCREDITATIONS = [
-  { name: 'CACHE', description: 'UK-recognised qualifications', detail: 'Leading awarding organisation for early years' },
-  { name: 'NCFE', description: 'Official UK recognition', detail: 'Recognised by UK education regulators' },
-  { name: 'BriteThink UK', description: 'Quality assurance partner', detail: 'Provides assessment and content support' },
+  { name: 'CACHE', description: 'UK-recognised qualifications', detail: 'Leading awarding organisation for early years', logoUrl: '/images/eduhub/accreditation/cache.png' },
+  { name: 'NCFE', description: 'Official UK recognition', detail: 'Recognised by UK education regulators', logoUrl: '/images/eduhub/accreditation/ncfe.png' },
+  { name: 'BriteThink UK', description: 'Quality assurance partner', detail: 'Provides assessment and content support', logoUrl: '/images/eduhub/accreditation/britethink.png' },
 ];
+
+const accreditationLogo = (name: string, logoUrl?: string) => {
+  if (logoUrl) return logoUrl;
+  const normalized = name.toLowerCase();
+  if (normalized.includes('brite')) return '/images/eduhub/accreditation/britethink.png';
+  if (normalized.includes('ncfe')) return '/images/eduhub/accreditation/ncfe.png';
+  return '/images/eduhub/accreditation/cache.png';
+};
 
 export default function EduHubHome() {
   const [openJourney, setOpenJourney] = useState<number | null>(0);
@@ -165,58 +174,60 @@ export default function EduHubHome() {
   const siteUrl = 'https://theearlyyearscompany.com';
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="eduhub-site min-h-screen bg-white overflow-x-hidden">
       <JsonLd data={[
         organizationSchema({ name: s.companyName, url: siteUrl, phone: s.mainPhone, email: s.mainEmail }),
         educationalOrgSchema({ name: `${s.companyName} — EduHub Teacher Training`, url: `${siteUrl}/eduhub`, phone: s.mainPhone, email: s.eduhubEmail || s.mainEmail, description: heroH.subheadline || 'UK-accredited CACHE teacher training in Egypt and the Middle East.' }),
       ]} />
+      <SitePopup site="eduhub" />
       <EduHubNav />
 
       <main>
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0d2c6b] via-[#1349D1] to-[#1a5cff] py-20 lg:py-32">
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-[0.06]" style={{
-          backgroundImage: 'linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)',
-          backgroundSize: '40px 40px'
-        }} />
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl pointer-events-none" />
+      <section className="eduhub-home-hero relative overflow-hidden py-14 sm:py-20 lg:py-24">
+        <div className="eduhub-home-hero__halo" aria-hidden="true" />
+        <div className="eduhub-home-hero__ring" aria-hidden="true" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-200 text-sm mb-6 max-w-full flex-wrap">
+          <div className="grid lg:grid-cols-[1.02fr_0.98fr] gap-10 lg:gap-14 items-center">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-xs sm:text-sm mb-6 max-w-full flex-wrap backdrop-blur-sm">
                 <Award className="w-4 h-4 flex-shrink-0" />
                 <span className="font-semibold">{heroH.eyebrow || 'First CACHE-Approved Centre in Egypt'}</span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white mb-5 leading-tight font-bold">
+              <h1 className="text-[2.65rem] sm:text-5xl lg:text-[4rem] text-white mb-5 leading-[1.02] font-bold max-w-2xl">
                 {heroH.headline || 'Advance Your Early Years Career'}
               </h1>
-              <p className="text-lg text-blue-100 mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg text-white/85 mb-8 leading-relaxed max-w-xl">
                 {heroH.subheadline || 'EduHub is a division of Early Years Company, offering UK-accredited CACHE teacher training. We help educators across Egypt and the Middle East gain internationally recognised qualifications.'}
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.18 }}>
+                <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.14 }}>
                   <Link to={heroH.primaryCTALink || '/eduhub/programs'}
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white text-[#1349D1] font-bold hover:shadow-2xl transition-shadow">
+                    className="eduhub-home-hero__primary inline-flex w-full sm:w-auto items-center justify-center gap-2 px-7 py-4 rounded-xl bg-white text-[#1C46D7] font-bold">
                     <GraduationCap className="w-5 h-5" />
                     {heroH.primaryCTALabel || 'Explore Courses'}
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} transition={{ duration: 0.18 }} className="group">
+                <motion.div whileTap={{ scale: 0.97 }} transition={{ duration: 0.14 }} className="group">
                   <Link to={heroH.secondaryCTALink || '/eduhub/contact'}
-                    className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 border border-white/25 text-white font-semibold hover:bg-white/20 transition-colors">
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-7 py-4 rounded-xl bg-white/10 border border-white/25 text-white font-semibold hover:bg-white/16 transition-colors">
                     {heroH.secondaryCTALabel || 'Register Interest'}
                     <ArrowRight className="w-5 h-5 translate-x-0 group-hover:translate-x-1 transition-transform duration-200" />
                   </Link>
                 </motion.div>
               </div>
+              <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs sm:text-sm text-white/78">
+                {['Internationally recognised', 'Flexible study', 'Assessor support'].map(item => (
+                  <span key={item} className="inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[#7DE3FF]" />{item}</span>
+                ))}
+              </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
+            <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+              className="eduhub-home-hero__visual relative">
+              <div className="rounded-[1.6rem] overflow-hidden aspect-[4/3] border border-white/25">
                 <ManagedImage
                   assetKey="eduhub.hero"
                   src={heroH.heroImageUrl || "https://images.unsplash.com/photo-1758270704021-361c165d68fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"}
@@ -224,16 +235,16 @@ export default function EduHubHome() {
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Floating trust badge */}
-              <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="absolute -bottom-4 left-0 sm:-left-4 bg-white rounded-2xl p-4 shadow-2xl border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                    <Award className="w-5 h-5 text-white" />
-                  </div>
+              <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.45, duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+                className="eduhub-home-hero__trust absolute -bottom-5 left-3 right-3 sm:left-5 sm:right-auto bg-white rounded-2xl p-3.5 sm:p-4 border border-white">
+                <div className="flex items-center justify-between gap-4 sm:min-w-[22rem]">
                   <div>
-                    <div className="text-sm font-bold text-gray-900">UK-Accredited</div>
-                    <div className="text-xs text-gray-500">CACHE · NCFE · BriteThink</div>
+                    <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#52627c]">Trusted qualification partners</div>
+                    <div className="mt-2 flex items-center gap-4">
+                      <img src="/images/eduhub/accreditation/cache.png" alt="CACHE accreditation" className="h-6 w-auto object-contain" />
+                      <img src="/images/eduhub/accreditation/ncfe.png" alt="NCFE accreditation" className="h-6 w-auto object-contain" />
+                      <img src="/images/eduhub/accreditation/britethink.png" alt="BriteThink quality assurance partner" className="h-6 w-auto max-w-[6.5rem] object-contain" />
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -242,16 +253,16 @@ export default function EduHubHome() {
 
           {/* Quick stats strip */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4">
+            className="eduhub-home-hero__stats mt-14 lg:mt-16 grid grid-cols-2 md:grid-cols-4">
             {(heroH.stats?.length ? heroH.stats : [
               { num: '#1', label: 'CACHE Centre in Egypt' },
               { num: '3', label: 'Qualification Levels' },
               { num: '500+', label: 'Graduates to Date' },
               { num: '100%', label: 'UK Accredited' },
             ]).map((s, i) => (
-              <div key={i} className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 text-center border border-white/15">
+              <div key={i} className="p-4 sm:p-5 text-center">
                 <div className="text-2xl font-bold text-white mb-1">{s.num}</div>
-                <div className="text-xs text-blue-200 font-medium">{s.label}</div>
+                <div className="text-xs text-white/72 font-medium">{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -269,7 +280,7 @@ export default function EduHubHome() {
               The first and only CACHE-approved training centre in Egypt, supported by NCFE UK and BriteThink UK.
             </p>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-5">
             {(cmsAccreditations || ACCREDITATIONS).map((acc, i) => (
               <motion.div key={i}
                 initial={{ opacity: 0, scale: 0.96 }}
@@ -277,9 +288,9 @@ export default function EduHubHome() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.13, duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
                 whileHover={{ y: -4, transition: { duration: 0.22, ease: 'easeOut' } }}
-                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-7 text-center border border-blue-100 hover:shadow-lg transition-shadow">
-                <div className="w-14 h-14 rounded-2xl bg-[#1349D1] flex items-center justify-center mx-auto mb-5">
-                  <Award className="w-7 h-7 text-white" />
+                className="eduhub-accreditation-card bg-white rounded-2xl p-6 text-left border border-blue-100 hover:shadow-lg transition-shadow">
+                <div className="h-16 rounded-xl bg-[#F4F7FF] border border-[#DFE8FF] flex items-center px-5 mb-5">
+                  <img src={accreditationLogo(acc.name, 'logoUrl' in acc ? acc.logoUrl : undefined)} alt={`${acc.name} accreditation logo`} className="max-h-9 max-w-[12rem] w-auto object-contain" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{acc.name}</h3>
                 <p className="text-[#1349D1] text-sm font-semibold mb-1">{acc.description}</p>

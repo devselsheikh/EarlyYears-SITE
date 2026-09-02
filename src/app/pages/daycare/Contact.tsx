@@ -79,7 +79,7 @@ export default function DaycareContact() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="daycare-site min-h-screen bg-white">
       <DaycareNav />
 
       <main>

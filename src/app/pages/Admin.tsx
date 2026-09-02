@@ -6,14 +6,15 @@ import {
   Pencil, Trash2, Check, X, Search,
   BarChart3, Link2, Megaphone, AlertTriangle, Copy, Globe, Upload, Bell,
   CloudUpload, CheckCircle2, AlertCircle, Loader2,
-  Shield, Activity, Package, ScrollText, Calendar, ClipboardList, Rocket, Download,
+  Shield, Activity, Package, Calendar, ClipboardList, Rocket, Download,
+  ArrowRight, LockKeyhole, Sparkles,
 } from 'lucide-react';
 import {
   CMSContent, CMSStatus, CMSEducator, CMSTestimonial, CMSGalleryItem,
   CMSCourse, CMSAlumni, CMSAccreditation, CMSBlogArticle, CMSFAQ,
   CMSCalendarEvent, CMSPortalFile, CMSDaycareHero, CMSEduhubHero,
   SupabaseSubmission, CMSMediaItem, CMSProgram, CMSScheduleStep,
-  generateId, DEFAULT_CMS, isPublished, getStatus, scanMediaUsage,
+  generateId, DEFAULT_CMS, isPublished, isEditorialArticle, getStatus, scanMediaUsage,
   getHealthWarnings, loadDraftCMS, saveDraft, publishCMS, publishAllAssets,
   fetchSubmissions, updateSubmissionStatus, deleteSubmission,
   CMS_KEY, loadCMS, saveCMS,
@@ -24,12 +25,12 @@ import type { Session } from '@supabase/supabase-js';
 import { invalidateCMSCache } from '../hooks/useCMS';
 import { invalidateAssetCache } from '../hooks/useAssets';
 import { AssetsSection } from '../components/admin/AssetsSection';
-import { ClaimsSection } from '../components/admin/ClaimsSection';
 import { LaunchChecklistSection } from '../components/admin/LaunchChecklistSection';
 import { ContentHealthSection } from '../components/admin/ContentHealthSection';
 import { PublicationsSection } from '../components/admin/PublicationsSection';
 import { PopupSection } from '../components/admin/PopupSection';
 import { useProfileRole } from '../auth/useProfileRole';
+import DaycareLogo from '../components/DaycareLogo';
 
 // ─── Brand colours ────────────────────────────────────────────────────────────
 // peach-600 ≈ #ea7c4b  |  coral ≈ #f06b5d  |  blue-600 = #2563eb
@@ -58,6 +59,16 @@ const btnBlue = 'inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-whi
 const btnSecondary = 'inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors';
 const btnDanger = 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-colors';
 const btnGhost = 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-lg text-xs font-semibold hover:bg-gray-50 transition-colors';
+
+function AdminEntryShell({ children }: { children: React.ReactNode }) {
+  return <main className="ey-gate admin-gate">
+    <header className="ey-gate__header"><a href="/daycare" aria-label="Early Years Daycare home"><DaycareLogo /></a><a className="ey-gate__back" href="/workspace">Back to workspace <ArrowRight aria-hidden="true" /></a></header>
+    <div className="ey-gate__layout">
+      <section className="ey-gate__welcome" aria-labelledby="admin-entry-title"><div className="ey-gate__art" aria-hidden="true"><span>●</span><span>★</span><span>♥</span><Sparkles /></div><div className="ey-gate__welcome-copy"><p className="platform-eyebrow">Owner Console</p><h1 id="admin-entry-title">Your website, carefully managed.</h1><p>Publishing, enquiries, images, security checks, and system health—reserved for the Early Years owner.</p></div><div className="ey-gate__trust"><Shield aria-hidden="true" /><span><strong>Owner-only controls</strong><small>Operational accounts continue through the separate workspace.</small></span></div></section>
+      <section className="ey-gate__entry">{children}</section>
+    </div>
+  </main>;
+}
 
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
@@ -163,7 +174,7 @@ function OverviewSection({ cms, onNavigate, unreadCount }: { cms: CMSContent; on
   const warnings = getHealthWarnings(cms);
 
   const stats = [
-    { label: 'Educators', value: cms.educators.length, sub: `${cms.educators.filter(isPublished).length} published`, color: 'bg-orange-50 border-orange-100', icon: Users, section: 'educators' },
+    { label: 'Company Team', value: cms.educators.length, sub: `${cms.educators.filter(isPublished).length} published`, color: 'bg-orange-50 border-orange-100', icon: Users, section: 'educators' },
     { label: 'Testimonials', value: cms.testimonials.length, sub: `${cms.testimonials.filter(isPublished).length} published`, color: 'bg-rose-50 border-rose-100', icon: Star, section: 'testimonials' },
     { label: 'Gallery Images', value: cms.gallery.length, sub: `${cms.gallery.filter(isPublished).length} visible`, color: 'bg-teal-50 border-teal-100', icon: LayoutGrid, section: 'gallery' },
     { label: 'Blog Articles', value: cms.blog.length, sub: `${cms.blog.filter(isPublished).length} published`, color: 'bg-blue-50 border-blue-100', icon: FileText, section: 'blog' },
@@ -172,7 +183,7 @@ function OverviewSection({ cms, onNavigate, unreadCount }: { cms: CMSContent; on
   ];
 
   const quickActions = [
-    { label: 'Add Educator', icon: Users, section: 'educators', action: 'new' },
+    { label: 'Add Team Member', icon: Users, section: 'educators', action: 'new' },
     { label: 'Add Review', icon: Star, section: 'testimonials', action: 'new' },
     { label: 'Add Gallery Image', icon: LayoutGrid, section: 'gallery', action: 'new' },
     { label: 'Add Blog Article', icon: FileText, section: 'blog', action: 'new' },
@@ -559,19 +570,23 @@ function SitemapGenerator({ cms }: { cms: CMSContent }) {
     const staticRoutes = [
       { loc: base, changefreq: 'weekly', priority: '1.0' },
       { loc: `${base}/daycare`, changefreq: 'weekly', priority: '0.9' },
+      { loc: `${base}/daycare/about`, changefreq: 'monthly', priority: '0.8' },
       { loc: `${base}/daycare/programs`, changefreq: 'monthly', priority: '0.8' },
       { loc: `${base}/daycare/contact`, changefreq: 'monthly', priority: '0.8' },
-      { loc: `${base}/daycare/parent-info`, changefreq: 'monthly', priority: '0.7' },
-      { loc: `${base}/daycare/gallery`, changefreq: 'monthly', priority: '0.6' },
       { loc: `${base}/eduhub`, changefreq: 'weekly', priority: '0.9' },
       { loc: `${base}/eduhub/programs`, changefreq: 'monthly', priority: '0.8' },
+      { loc: `${base}/eduhub/programs/diploma`, changefreq: 'monthly', priority: '0.7' },
       { loc: `${base}/eduhub/about`, changefreq: 'monthly', priority: '0.7' },
       { loc: `${base}/eduhub/contact`, changefreq: 'monthly', priority: '0.8' },
       { loc: `${base}/blog`, changefreq: 'daily', priority: '0.8' },
+      { loc: `${base}/contact`, changefreq: 'monthly', priority: '0.7' },
+      { loc: `${base}/privacy`, changefreq: 'yearly', priority: '0.3' },
+      { loc: `${base}/terms`, changefreq: 'yearly', priority: '0.3' },
     ];
 
-    const publishedBlogs = cms.blog.filter(isPublished);
-    const blogRoutes = publishedBlogs.map(b => ({ loc: `${base}/blog/${b.slug}`, changefreq: 'monthly', priority: '0.6' }));
+    const publishedBlogs = cms.blog.filter(isPublished).filter(isEditorialArticle);
+    const blogSlugs = new Set([...HARDCODED_BLOG_POSTS.map(post => post.slug), ...publishedBlogs.map(post => post.slug)]);
+    const blogRoutes = [...blogSlugs].map(slug => ({ loc: `${base}/blog/${slug}`, changefreq: 'monthly', priority: '0.6' }));
 
     const all = [...staticRoutes, ...blogRoutes];
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -929,7 +944,7 @@ function EducatorsSection({ cms, onChange, initialNew }: { cms: CMSContent; onCh
 
   return (
     <div>
-      <SectionHeader title="Educators" description="The Team Behind the Magic. Shown in carousel on the Daycare page." />
+      <SectionHeader title="Company Team" description="Manage the verified team shown across Daycare and EduHub. Nesreen and Lamia appear in both; EduHub also displays its training and quality team." />
       <div className="flex flex-wrap gap-2 mb-4">
         <div className="relative flex-1 min-w-40"><Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" /><input className={inputCls + ' pl-9'} placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)} /></div>
         {(['all', 'published', 'draft', 'hidden'] as const).map(s => <button key={s} onClick={() => setStatusFilter(s)} className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${statusFilter === s ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{s}</button>)}
@@ -1863,7 +1878,7 @@ type SectionId = 'overview' | 'settings' | 'media' | 'assets' | 'seo' | 'cta' | 
   'educators' | 'testimonials' | 'gallery' | 'programs' | 'schedule' | 'meals' | 'faq' |
   'calendar-events' | 'portal-files' | 'daycare-hero' |
   'courses' | 'alumni' | 'accreditation' | 'eduhub-hero' | 'blog' | 'popups' |
-  'claims' | 'content-health' | 'publications' | 'audit-log' | 'launch-checklist';
+  'content-health' | 'publications' | 'launch-checklist';
 
 const NAV_GROUPS = [
   {
@@ -1881,10 +1896,8 @@ const NAV_GROUPS = [
       { id: 'cta' as SectionId, label: 'CTA Settings', icon: Megaphone },
       { id: 'forms' as SectionId, label: 'Form Settings', icon: Mail },
       { id: 'submissions' as SectionId, label: 'Submissions', icon: Inbox },
-      { id: 'claims' as SectionId, label: 'Claims & Verification', icon: Shield },
       { id: 'content-health' as SectionId, label: 'Content Health', icon: Activity },
       { id: 'publications' as SectionId, label: 'Publications', icon: Package },
-      { id: 'audit-log' as SectionId, label: 'Audit Log', icon: ScrollText },
       { id: 'launch-checklist' as SectionId, label: 'Launch Checklist', icon: Rocket },
     ],
   },
@@ -1892,7 +1905,7 @@ const NAV_GROUPS = [
     label: 'Daycare',
     items: [
       { id: 'daycare-hero' as SectionId, label: 'Hero Section', icon: LayoutGrid },
-      { id: 'educators' as SectionId, label: 'Educators', icon: Users },
+      { id: 'educators' as SectionId, label: 'Company Team', icon: Users },
       { id: 'testimonials' as SectionId, label: 'Testimonials', icon: Star },
       { id: 'gallery' as SectionId, label: 'Gallery', icon: LayoutGrid },
       { id: 'programs' as SectionId, label: 'Programs', icon: BookOpen },
@@ -2277,7 +2290,7 @@ export default function Admin() {
     setSigningIn(true);
     setAuthError('');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setAuthError(error.message);
+    if (error) setAuthError('That email or password was not recognised. Check your details and try again.');
     setSigningIn(false);
   };
 
@@ -2285,62 +2298,15 @@ export default function Admin() {
     await supabase.auth.signOut();
   };
 
-  if (authLoading || (!!session && roleLoading)) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-rose-50 to-pink-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-400 animate-spin" />
-      </div>
-    );
-  }
+  if (authLoading || (!!session && roleLoading)) return <AdminEntryShell><div className="ey-gate__loading" role="status"><span aria-hidden="true" /><strong>Opening the Owner Console</strong><small>Verifying secure access…</small></div></AdminEntryShell>;
 
   if (localOwnerPreview) {
     return <AdminDashboard onLogout={() => window.location.assign('/workspace')} localMode />;
   }
 
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-rose-50 to-pink-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm">
-          <div className="text-center mb-7">
-            <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Settings className="w-7 h-7 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">Early Years CMS</h1>
-            <p className="text-sm text-gray-500 mt-1">Database Status</p>
-          </div>
-          <form onSubmit={handleSignIn} className="space-y-4">
-            <Field label="Email" required>
-              <input className={inputCls} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@example.com" autoFocus autoComplete="email" />
-            </Field>
-            <Field label="Password" required>
-              <input className={inputCls + (authError ? ' border-red-400 ring-1 ring-red-400' : '')} type="password" value={password} onChange={e => { setPassword(e.target.value); setAuthError(''); }} placeholder="Password" autoComplete="current-password" />
-              {authError && <p className="text-xs text-red-500 mt-1">{authError}</p>}
-            </Field>
-            <button type="submit" disabled={signingIn} className={btnPrimary + ' w-full justify-center'}>
-              {signingIn ? <><Loader2 className="w-4 h-4 animate-spin" />Signing in…</> : 'Sign In'}
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+  if (!session) return <AdminEntryShell><div className="ey-gate__entry-heading"><span className="ey-gate__icon"><LockKeyhole aria-hidden="true" /></span><p className="platform-eyebrow">Owner-only access</p><h2>Owner Console</h2><p>Sign in with the owner account provided for Early Years. Teachers, administrators, and families should use the main workspace.</p></div><form onSubmit={handleSignIn} className="ey-gate__form"><label htmlFor="owner-email">Email address</label><input id="owner-email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" autoFocus autoComplete="email" required /><label htmlFor="owner-password">Password</label><input id="owner-password" type="password" value={password} onChange={e => { setPassword(e.target.value); setAuthError(''); }} placeholder="Your password" autoComplete="current-password" required />{authError && <p className="platform-error" role="alert">{authError}</p>}<button type="submit" disabled={signingIn} className="platform-button ey-gate__submit">{signingIn ? 'Signing in…' : 'Sign in securely'} {!signingIn && <ArrowRight aria-hidden="true" />}</button></form><a href="/workspace" className="admin-gate__workspace"><Users aria-hidden="true" /><span><strong>Not managing the website?</strong><small>Open the everyday staff and family workspace.</small></span><ArrowRight aria-hidden="true" /></a></AdminEntryShell>;
 
-  if (accountRole !== 'owner') {
-    return (
-      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <section className="bg-white border border-slate-200 rounded-3xl shadow-xl p-8 w-full max-w-md text-center">
-          <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4"><Shield className="w-7 h-7 text-slate-600" /></div>
-          <h1 className="text-2xl font-bold text-slate-900">Owner access required</h1>
-          <p className="text-sm text-slate-600 mt-2 leading-relaxed">{roleError || 'This console contains publishing, infrastructure, security, and technical controls. Your account workspace remains available separately.'}</p>
-          <div className="grid gap-2 mt-6">
-            {roleError && <button type="button" onClick={() => void refreshRole()} className={btnPrimary + ' justify-center'}>Try verification again</button>}
-            <a href="/workspace" className={btnPrimary + ' justify-center'}>Return to workspace</a>
-            <button type="button" onClick={handleSignOut} className="min-h-11 text-sm font-semibold text-slate-600">Sign out</button>
-          </div>
-        </section>
-      </main>
-    );
-  }
+  if (accountRole !== 'owner') return <AdminEntryShell><div className="ey-gate__entry-heading"><span className="ey-gate__icon"><Shield aria-hidden="true" /></span><p className="platform-eyebrow">Protected controls</p><h2>Owner access required</h2><p>This account cannot open website publishing or infrastructure controls. No restricted information was displayed.</p></div><div className="admin-gate__actions">{roleError && <button type="button" onClick={() => void refreshRole()} className="platform-button">Try verification again</button>}<a href="/workspace" className="platform-button">Return to workspace <ArrowRight aria-hidden="true" /></a><button type="button" onClick={handleSignOut} className="platform-button platform-button--quiet">Sign out</button></div></AdminEntryShell>;
 
   return <AdminDashboard onLogout={handleSignOut} />;
 }
@@ -2436,7 +2402,7 @@ function AdminDashboard({ onLogout, localMode = false }: { onLogout: () => void;
     submissions: 'Form enquiries submitted through the public website.',
     'daycare-hero': 'Headline, subtitle, CTAs, and trust badges on the Daycare homepage.',
     'eduhub-hero': 'Headline, subtitle, CTAs, and stats strip on the EduHub homepage.',
-    educators: 'The Team Behind the Magic carousel on the Daycare page.',
+    educators: 'Verified team profiles shared by Daycare and EduHub, with brand-specific visibility.',
     testimonials: 'Parent reviews shown on the Daycare page.',
     gallery: 'Campus photos shown in the gallery section.',
     programs: 'Age-based classes on the Programs page.',
@@ -2451,10 +2417,8 @@ function AdminDashboard({ onLogout, localMode = false }: { onLogout: () => void;
     blog: 'Parent Blog and Educator Blog articles.',
     assets: 'Manage image assets and replacements.',
     popups: 'Announcement popups shown to site visitors.',
-    claims: 'Claims and verification.',
     'content-health': 'Content health overview.',
     publications: 'Publications and asset publishing.',
-    'audit-log': 'Audit log of CMS actions.',
     'launch-checklist': 'Pre-launch checklist for going live.',
   };
 
@@ -2470,7 +2434,7 @@ function AdminDashboard({ onLogout, localMode = false }: { onLogout: () => void;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex text-gray-900">
+    <div className="admin-console min-h-screen bg-gray-50 flex text-gray-900">
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
       {/* Sidebar */}
@@ -2599,17 +2563,9 @@ function AdminDashboard({ onLogout, localMode = false }: { onLogout: () => void;
             {active === 'accreditation' && <AccreditationSection cms={cms} onChange={handleChange} />}
             {active === 'blog' && <BlogSection cms={cms} onChange={handleChange} initialNew={pendingAction === 'new'} key={active + pendingAction} />}
             {active === 'popups' && <PopupSection />}
-            {active === 'claims' && <ClaimsSection />}
             {active === 'launch-checklist' && <LaunchChecklistSection />}
             {active === 'content-health' && <ContentHealthSection cms={cms} onNavigate={id => setActive(id as SectionId)} />}
             {active === 'publications' && <PublicationsSection />}
-            {active === 'audit-log' && (
-              <div className="text-center py-16 text-gray-400">
-                <ScrollText className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                <p className="text-sm font-medium">Audit Log</p>
-                <p className="text-xs mt-1">Requires server-side audit logging integration. All CMS actions are currently tracked in Supabase row-level history.</p>
-              </div>
-            )}
           </div>
         </main>
       </div>

@@ -22,6 +22,10 @@ export function isPublished(record: { status?: CMSStatus; active?: boolean }): b
   return getStatus(record) === 'published';
 }
 
+export function isEditorialArticle(record: { category?: string }): boolean {
+  return record.category?.trim().toLowerCase() !== 'newsletter';
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface CMSStat { label: string; value: string }
@@ -367,7 +371,7 @@ export const DEFAULT_CMS: CMSContent = {
     daycarePhone: '+20 2 2615 3903',
     eduhubPhone: '+20 111 500 4090',
     whatsapp: '+20 111 443 3382',
-    address: 'AUC New Cairo Campus, Gate 3, Ring Road, Cairo',
+    address: 'AUC New Cairo, Campus Center, Arnold Pavilion PO29, New Cairo 11835, Egypt',
     googleMapsLink: 'https://maps.app.goo.gl/JYf4tcxn6CyofMWU6',
     linkedinUrl: 'https://www.linkedin.com/company/early-years-daycare/',
     instagramUrl: 'https://www.instagram.com/earlyyearscompany/',
@@ -478,11 +482,11 @@ export const DEFAULT_CMS: CMSContent = {
   },
 
   educators: [
-    { id: generateId(), displayOrder: 1, name: 'Nesrin Hassanin', title: 'Managing Director', qualification: 'M.Ed. (in progress) | CACHE Level 3 | 30 Years Experience', specialtyBadge: '🏛️ EYC Co-Founder', bio: 'Early Years expert with 30 years across the Middle East, co-founder of Early Years Company and two nursery schools in Egypt. Career spans direct childcare, nursery management, staff training, and startup advisory. Holds a CACHE Level 3 in Early Childhood Education and is completing a Master\'s in Leadership in Education — driven by a lifelong belief that quality Early Years care shapes every child\'s future.', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400', featured: true, leadership: true, status: 'published' },
-    { id: generateId(), displayOrder: 2, name: 'Lamia Hassanin', title: 'Educational Coordinator', qualification: 'AUC Early Years Education | SENCo (LRC) | Parenting Coach (Intellect)', specialtyBadge: '🏛️ EYC Co-Founder', bio: 'A founding member of Early Years Company with 18+ years at Cairo\'s most reputable nursery, where she rose to Deputy Head. Holds an Early Years Education degree from AUC, SENCo certification from LRC, and a Parenting Coach qualification from Intellect. Passionate advocate for child-led, play-based learning at every child\'s own pace.', img: '/lamia-hassanin.png', featured: true, leadership: true, status: 'published' },
-    { id: generateId(), displayOrder: 3, name: 'Sarah Al-Masri', title: 'Lead Early Years Educator', qualification: 'CACHE Level 3 | 12 Years Experience', specialtyBadge: '🏅 EYFS Specialist', bio: 'Sarah specialises in language development and EYFS play-based learning. Parents describe her as the teacher who \'makes every child feel seen\'.', img: 'https://images.unsplash.com/photo-1758685847967-c598c3b176b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400', featured: false, leadership: false, status: 'published' },
-    { id: generateId(), displayOrder: 4, name: 'Nadia Hassan', title: 'Nursery Room Leader', qualification: 'CACHE Level 3 | 8 Years Experience', specialtyBadge: '🎓 CACHE Certified', bio: 'Nadia\'s background in child psychology brings a uniquely nurturing approach to the toddler and nursery rooms. She leads our settling-in program.', img: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400', featured: false, leadership: false, status: 'published' },
-    { id: generateId(), displayOrder: 5, name: 'Reem Fouad', title: 'Pre-K & School Readiness Lead', qualification: 'CACHE Level 5 | 15 Years Experience', specialtyBadge: '⭐ School Readiness', bio: 'Reem has prepared hundreds of children for primary school. Her pre-K graduates consistently receive excellent feedback from receiving schools.', img: 'https://images.unsplash.com/photo-1761604478724-13fe879468cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400', featured: false, leadership: false, status: 'published' },
+    { id: generateId(), displayOrder: 1, name: 'Nesrin Hassanin', title: 'Managing Director', qualification: 'M.Ed. Leadership | CACHE Levels 3 & 5 | 30 Years Experience', specialtyBadge: '🏛️ EYC Co-Founder', bio: 'Early years leader with 30 years of experience supporting children, families, educators, and learning settings across the Middle East. Co-founder of Early Years Company and two nursery schools in Egypt.', img: '/images/eduhub/team/nesreen-hassanin.jpg', featured: true, leadership: true, status: 'published' },
+    { id: generateId(), displayOrder: 2, name: 'Lamia Hassanin', title: 'Educational Coordinator', qualification: 'M.Ed. | SENCO | Parenting Coach | 23 Years Experience', specialtyBadge: '🏛️ EYC Co-Founder', bio: 'Educational leader with 23 years of early years management experience, focused on inclusive, child-led learning and practical support for educators and families.', img: '/images/eduhub/team/lamia-hassanin.jpg', featured: true, leadership: true, status: 'published' },
+    { id: generateId(), displayOrder: 3, name: 'Ann Osman', title: 'Trainer and Assessor', qualification: '27 Years in Education | Montessori | Child Psychology', specialtyBadge: 'EduHub Training Team', bio: 'Ann brings extensive British and American curriculum experience, including early years leadership and inclusive education. Her workshops cover classroom management, Montessori practice, special educational needs, and confident staff development.', img: '/images/eduhub/team/ann-osman.jpg', featured: false, leadership: false, status: 'published' },
+    { id: generateId(), displayOrder: 4, name: 'Bassent Barsoum', title: 'Centre Coordinator and Assessor', qualification: 'B.A. Psychology, AUC | Professional Educator Diploma', specialtyBadge: 'EduHub Training Team', bio: 'Bassent began as an early years educator after studying Psychology at AUC and joined Early Years in 2017. She coordinates the centre and supports learners through assessment and professional practice.', img: '/images/eduhub/team/bassent-barsoum.jpg', featured: false, leadership: false, status: 'published' },
+    { id: generateId(), displayOrder: 5, name: 'Robert Mitton', title: 'Internal Quality Assurance Officer', qualification: 'Qualified Assessor and IQA | Vocational Training Specialist', specialtyBadge: 'EduHub Quality Team', bio: 'Robert combines vocational assessment, moderation, and quality-assurance expertise with first-hand knowledge of early years settings. He safeguards the consistency and UK-aligned quality of EduHub training.', img: '/images/eduhub/team/robert-mitton.jpg', featured: false, leadership: false, status: 'published' },
   ],
 
   testimonials: [
@@ -582,9 +586,9 @@ export const DEFAULT_CMS: CMSContent = {
   ],
 
   accreditations: [
-    { id: generateId(), displayOrder: 1, name: 'CACHE', description: 'UK-recognised qualifications', detail: 'Leading awarding organisation for early years', logoUrl: '', externalLink: 'https://www.ncfe.org.uk', status: 'published' },
-    { id: generateId(), displayOrder: 2, name: 'NCFE', description: 'Official UK recognition', detail: 'Recognised by UK education regulators', logoUrl: '', externalLink: 'https://www.ncfe.org.uk', status: 'published' },
-    { id: generateId(), displayOrder: 3, name: 'BriteThink UK', description: 'Quality assurance partner', detail: 'Provides assessment and content support', logoUrl: '', externalLink: '', status: 'published' },
+    { id: generateId(), displayOrder: 1, name: 'CACHE', description: 'UK-recognised qualifications', detail: 'Leading awarding organisation for early years', logoUrl: '/images/eduhub/accreditation/cache.png', externalLink: 'https://www.ncfe.org.uk', status: 'published' },
+    { id: generateId(), displayOrder: 2, name: 'NCFE', description: 'Official UK recognition', detail: 'Recognised by UK education regulators', logoUrl: '/images/eduhub/accreditation/ncfe.png', externalLink: 'https://www.ncfe.org.uk', status: 'published' },
+    { id: generateId(), displayOrder: 3, name: 'BriteThink UK', description: 'Quality assurance partner', detail: 'Provides assessment and content support', logoUrl: '/images/eduhub/accreditation/britethink.png', externalLink: '', status: 'published' },
   ],
 
   blog: [
@@ -600,7 +604,7 @@ export const DEFAULT_CMS: CMSContent = {
       authorTitle: 'Early Years — The Daycare',
       publishDate: '2026-05-01',
       readTime: '4 min',
-      featuredImage: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      featuredImage: '/images/daycare/daycare.section.classroom-2.jpg',
       featured: true,
       status: 'published',
       seoTitle: 'May 2026 Newsletter | Early Years Daycare',
@@ -618,7 +622,7 @@ export const DEFAULT_CMS: CMSContent = {
       authorTitle: 'Early Years — The Daycare',
       publishDate: '2026-04-01',
       readTime: '4 min',
-      featuredImage: 'https://images.unsplash.com/photo-1567680148642-ac49a46543d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      featuredImage: '/images/daycare/daycare.gallery.sensory.jpg',
       featured: false,
       status: 'published',
       seoTitle: 'April 2026 Newsletter | Early Years Daycare',
@@ -636,7 +640,7 @@ export const DEFAULT_CMS: CMSContent = {
       authorTitle: 'Early Years — The Daycare',
       publishDate: '2026-03-01',
       readTime: '3 min',
-      featuredImage: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      featuredImage: '/images/daycare/daycare.gallery.playground.jpg',
       featured: false,
       status: 'published',
       seoTitle: 'March 2026 Newsletter | Early Years Daycare',
@@ -654,7 +658,7 @@ export const DEFAULT_CMS: CMSContent = {
       authorTitle: 'Early Years — The Daycare',
       publishDate: '2026-02-01',
       readTime: '3 min',
-      featuredImage: 'https://images.unsplash.com/photo-1762475833776-fd57865db4d5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      featuredImage: '/images/daycare/daycare.gallery.reading.jpg',
       featured: false,
       status: 'published',
       seoTitle: 'February 2026 Newsletter | Early Years Daycare',
@@ -672,13 +676,13 @@ export const DEFAULT_CMS: CMSContent = {
       authorTitle: 'Early Years — The Daycare',
       publishDate: '2026-01-01',
       readTime: '4 min',
-      featuredImage: 'https://images.unsplash.com/photo-1759772238042-3d95f8256381?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      featuredImage: '/images/daycare/daycare.hero.family.jpg',
       featured: false,
       status: 'published',
       seoTitle: 'January 2026 Newsletter | Early Years Daycare',
       seoDescription: 'New term welcome, programme updates and policy reminders from Early Years The Daycare, January 2026.',
     },
-  ],
+  ].filter(isEditorialArticle),
 
   faq: [
     { id: generateId(), displayOrder: 1, group: 'Daycare', question: 'What ages do you accept?', answer: 'We welcome children from 1 to 10 years old. Our Preschool Program serves ages 1–5, while our After-School Program caters to children up to 10 years old.', tip: 'Early Years is one of the few centres in Egypt with 25 years of EYFS experience!', icon: '👶', status: 'published' },
@@ -713,11 +717,11 @@ export const DEFAULT_CMS: CMSContent = {
 export function loadCMS(): CMSContent {
   try {
     const raw = localStorage.getItem(CMS_KEY);
-    if (!raw) return DEFAULT_CMS;
+    if (!raw) return migrate(DEFAULT_CMS);
     const parsed = JSON.parse(raw) as CMSContent;
     return migrate({ ...DEFAULT_CMS, ...parsed });
   } catch {
-    return DEFAULT_CMS;
+    return migrate(DEFAULT_CMS);
   }
 }
 
@@ -729,7 +733,13 @@ function migrate(cms: CMSContent): CMSContent {
   };
   return {
     ...cms,
-    educators: cms.educators?.map(e => conv(e) as CMSEducator) ?? DEFAULT_CMS.educators,
+    educators: (() => {
+      const legacyPlaceholders = new Set(['Sarah Al-Masri', 'Nadia Hassan', 'Reem Fouad']);
+      const current = (cms.educators ?? []).map(e => conv(e) as CMSEducator).filter(e => !legacyPlaceholders.has(e.name));
+      const requiredNames = new Set(current.map(e => e.name));
+      for (const member of DEFAULT_CMS.educators) if (!requiredNames.has(member.name)) current.push(member);
+      return current.sort((a, b) => a.displayOrder - b.displayOrder);
+    })(),
     testimonials: cms.testimonials?.map(t => conv(t) as CMSTestimonial) ?? DEFAULT_CMS.testimonials,
     gallery: cms.gallery?.map(g => conv(g) as CMSGalleryItem) ?? DEFAULT_CMS.gallery,
     programs: cms.programs?.map(p => conv(p) as CMSProgram) ?? DEFAULT_CMS.programs,
@@ -737,7 +747,8 @@ function migrate(cms: CMSContent): CMSContent {
     courses: cms.courses?.map(c => { if (!c.publishStatus) c.publishStatus = c.active !== false ? 'published' : 'hidden'; return c; }) ?? DEFAULT_CMS.courses,
     alumni: cms.alumni?.map(a => conv(a) as CMSAlumni) ?? DEFAULT_CMS.alumni,
     accreditations: cms.accreditations?.map(a => conv(a) as CMSAccreditation) ?? DEFAULT_CMS.accreditations,
-    blog: cms.blog?.map(b => conv(b) as CMSBlogArticle) ?? [],
+    // Newsletters are downloadable family resources, never editorial articles.
+    blog: cms.blog?.map(b => conv(b) as CMSBlogArticle).filter(isEditorialArticle) ?? [],
     faq: cms.faq?.map(f => conv(f) as CMSFAQ) ?? DEFAULT_CMS.faq,
     calendarEvents: cms.calendarEvents?.map(e => conv(e) as CMSCalendarEvent) ?? DEFAULT_CMS.calendarEvents,
     portalFiles: cms.portalFiles?.map(f => conv(f) as CMSPortalFile) ?? DEFAULT_CMS.portalFiles,

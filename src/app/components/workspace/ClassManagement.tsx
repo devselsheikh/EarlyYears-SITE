@@ -3,6 +3,7 @@ import { AlertTriangle, Check, LoaderCircle, Plus, School, ShieldCheck, UsersRou
 import { supabase } from '../../utils/supabase/client';
 import {
   createCloudClassroom,
+  createCloudChild,
   enrolCloudChild,
   linkCloudGuardian,
   loadClassManagement,
@@ -25,6 +26,9 @@ export function ClassManagement({ cloud }: Props) {
   const [guardianChildId, setGuardianChildId] = useState('');
   const [guardianId, setGuardianId] = useState('');
   const [relationship, setRelationship] = useState('Parent');
+  const [newChildName, setNewChildName] = useState('');
+  const [newChildDob, setNewChildDob] = useState('');
+  const [newChildClassroom, setNewChildClassroom] = useState('');
 
   const load = async () => {
     if (!cloud) return;
@@ -106,6 +110,23 @@ export function ClassManagement({ cloud }: Props) {
       setGuardianId('');
     }, 'Parent linked securely to this child.');
   };
+  const createChild = (event: React.FormEvent) => {
+    event.preventDefault();
+    const cleanName = newChildName.trim();
+    if (cleanName.length < 2) return;
+    void run(async () => {
+      if (cloud) await createCloudChild(supabase, cleanName, newChildDob, newChildClassroom);
+      else {
+        const id = `child-${crypto.randomUUID()}`;
+        setData(current => ({
+          ...current,
+          children: [...current.children, { id, name: cleanName, classroomId: newChildClassroom, guardianIds: [] }],
+          classrooms: current.classrooms.map(room => room.id === newChildClassroom ? { ...room, childIds: [...room.childIds, id] } : room),
+        }));
+      }
+      setNewChildName(''); setNewChildDob(''); setNewChildClassroom('');
+    }, `${cleanName} was added securely.`);
+  };
 
   return <section className="workspace-panel class-manager" aria-labelledby="class-manager-title">
     <div className="workspace-panel__heading"><div><p className="platform-eyebrow">Operations</p><h2 id="class-manager-title">Class setup</h2></div><School aria-hidden="true" /></div>
@@ -121,7 +142,8 @@ export function ClassManagement({ cloud }: Props) {
           <div className="class-manager__form-row"><label>Place a child<select value={childId} onChange={event => setChildId(event.target.value)}><option value="">Select a child</option>{data.children.map(child => <option key={child.id} value={child.id}>{child.name}{child.classroomId && child.classroomId !== selected.id ? ' · move from another class' : ''}</option>)}</select></label><button type="button" className="platform-button" disabled={!childId || state === 'saving'} onClick={enrolChild}>Save placement</button></div>
         </> : <p className="workspace-empty">Select or create a classroom.</p>}
         <details className="class-manager__details"><summary>Create a classroom</summary><form onSubmit={createRoom}><label>Name<input value={name} onChange={event => setName(event.target.value)} maxLength={80} required placeholder="e.g. Butterflies" /></label><label>Age group<input value={ageGroup} onChange={event => setAgeGroup(event.target.value)} maxLength={80} placeholder="e.g. 2–3 years" /></label><label>Capacity<input type="number" min="1" max="100" value={capacity} onChange={event => setCapacity(event.target.value)} placeholder="Optional" /></label><button className="platform-button" disabled={state === 'saving' || name.trim().length < 2}><Plus aria-hidden="true" /> Create classroom</button></form></details>
-        <details className="class-manager__details"><summary>Link a Parent account</summary><div className="class-manager__link-form"><label>Child<select value={guardianChildId} onChange={event => setGuardianChildId(event.target.value)}><option value="">Select a child</option>{data.children.map(child => <option key={child.id} value={child.id}>{child.name}</option>)}</select></label><label>Parent account<select value={guardianId} onChange={event => setGuardianId(event.target.value)}><option value="">Select a parent</option>{parents.map(parent => <option key={parent.id} value={parent.id}>{parent.displayName}</option>)}</select></label><label>Relationship<input value={relationship} onChange={event => setRelationship(event.target.value)} maxLength={40} /></label><button type="button" className="platform-button" disabled={!guardianChildId || !guardianId || state === 'saving'} onClick={linkGuardian}>Link parent</button><small>New login invitations will be added through a server-only flow; passwords are never created or exposed here.</small></div></details>
+        <details className="class-manager__details"><summary>Add a child</summary><form onSubmit={createChild}><label>Child’s full name<input value={newChildName} onChange={event => setNewChildName(event.target.value)} maxLength={100} autoComplete="off" required placeholder="Full name" /></label><label>Date of birth<input type="date" value={newChildDob} max={new Date().toISOString().slice(0, 10)} onChange={event => setNewChildDob(event.target.value)} /></label><label>Classroom<select value={newChildClassroom} onChange={event => setNewChildClassroom(event.target.value)}><option value="">Assign later</option>{data.classrooms.map(room => <option key={room.id} value={room.id}>{room.name}</option>)}</select></label><button className="platform-button" disabled={state === 'saving' || newChildName.trim().length < 2}><Plus aria-hidden="true" /> Add child</button></form></details>
+        <details className="class-manager__details"><summary>Link a Parent account</summary><div className="class-manager__link-form"><label>Child<select value={guardianChildId} onChange={event => setGuardianChildId(event.target.value)}><option value="">Select a child</option>{data.children.map(child => <option key={child.id} value={child.id}>{child.name}</option>)}</select></label><label>Parent account<select value={guardianId} onChange={event => setGuardianId(event.target.value)}><option value="">Select a parent</option>{parents.map(parent => <option key={parent.id} value={parent.id}>{parent.displayName}</option>)}</select></label><label>Relationship<input value={relationship} onChange={event => setRelationship(event.target.value)} maxLength={40} /></label><button type="button" className="platform-button" disabled={!guardianChildId || !guardianId || state === 'saving'} onClick={linkGuardian}>Link parent</button><small>New login invitations use the protected server flow; passwords are never created or exposed here.</small></div></details>
       </div>
     </div>}
     {state === 'error' && cloud && <button type="button" className="platform-button platform-button--quiet class-manager__retry" onClick={() => void load()}>Try loading again</button>}

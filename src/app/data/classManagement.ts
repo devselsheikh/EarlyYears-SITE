@@ -6,20 +6,9 @@ export type ManagedClassroom = { id: string; name: string; ageGroup: string; cap
 export type ClassManagementData = { classrooms: ManagedClassroom[]; profiles: DirectoryProfile[]; children: ManagedChild[] };
 
 export const previewClassManagement: ClassManagementData = {
-  profiles: [
-    { id: 'teacher-sarah', displayName: 'Sarah Al-Masri', role: 'teacher', active: true },
-    { id: 'teacher-nadia', displayName: 'Nadia Hassan', role: 'teacher', active: true },
-    { id: 'parent-mariam', displayName: 'Mariam Hassan', role: 'parent', active: true },
-  ],
-  children: [
-    { id: 'child-amira', name: 'Amira Hassan', classroomId: 'class-sunflowers', guardianIds: ['parent-mariam'] },
-    { id: 'child-youssef', name: 'Youssef Karim', classroomId: 'class-sunflowers', guardianIds: [] },
-    { id: 'child-lina', name: 'Lina Mostafa', classroomId: 'class-butterflies', guardianIds: [] },
-  ],
-  classrooms: [
-    { id: 'class-sunflowers', name: 'Sunflowers', ageGroup: '3–4 years', capacity: 14, teacherIds: ['teacher-sarah'], childIds: ['child-amira', 'child-youssef'] },
-    { id: 'class-butterflies', name: 'Butterflies', ageGroup: '2–3 years', capacity: 12, teacherIds: ['teacher-nadia'], childIds: ['child-lina'] },
-  ],
+  profiles: [],
+  children: [],
+  classrooms: [],
 };
 
 function requireNoError(error: { message?: string } | null, fallback: string) {
@@ -72,4 +61,8 @@ export async function enrolCloudChild(client: SupabaseClient, childId: string, c
 export async function linkCloudGuardian(client: SupabaseClient, childId: string, guardianId: string, relationship: string) {
   const { error } = await client.rpc('link_child_guardian', { target_child: childId, target_guardian: guardianId, guardian_relationship: relationship });
   requireNoError(error, 'The parent link was not saved.');
+}
+export async function createCloudChild(client: SupabaseClient, name: string, dateOfBirth: string, classroomId: string) {
+  const { error } = await client.rpc('create_child_record', { child_name: name, child_date_of_birth: dateOfBirth || null, target_classroom: classroomId || null });
+  requireNoError(error, 'The child record was not created.');
 }

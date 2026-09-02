@@ -1,0 +1,155 @@
+{
+  "generatedAt": "2026-08-21T11:12:00.510Z",
+  "assets": [
+    {
+      "key": "daycare.hero",
+      "path": "/images/daycare/daycare.hero.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.hero.family",
+      "path": "/images/daycare/daycare.hero.family.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.section.family-play",
+      "path": "/images/daycare/daycare.section.family-play.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.section.classroom-2",
+      "path": "/images/daycare/daycare.section.classroom-2.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.about.hero",
+      "path": "/images/daycare/daycare.about.hero.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.about.mission",
+      "path": "/images/daycare/daycare.about.mission.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.educator.nesrin",
+      "path": "/images/daycare/daycare.educator.nesrin.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.educator.lamia",
+      "path": "/images/daycare/daycare.educator.lamia.png",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.educator.sarah",
+      "path": "/images/daycare/daycare.educator.sarah.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.educator.nadia",
+      "path": "/images/daycare/daycare.educator.nadia.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.educator.reem",
+      "path": "/images/daycare/daycare.educator.reem.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.sarah-m",
+      "path": "/images/daycare/daycare.testimonial.sarah-m.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.ahmed",
+      "path": "/images/daycare/daycare.testimonial.ahmed.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.noha",
+      "path": "/images/daycare/daycare.testimonial.noha.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.karim",
+      "path": "/images/daycare/daycare.testimonial.karim.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.dina",
+      "path": "/images/daycare/daycare.testimonial.dina.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.testimonial.hossam",
+      "path": "/images/daycare/daycare.testimonial.hossam.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.gallery.classroom",
+      "path": "/images/daycare/daycare.gallery.classroom.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.gallery.sensory",
+      "path": "/images/daycare/daycare.gallery.sensory.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.gallery.playground",
+      "path": "/images/daycare/daycare.gallery.playground.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.gallery.dining",
+      "path": "/images/daycare/daycare.gallery.dining.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "daycare.gallery.reading",
+      "path": "/images/daycare/daycare.gallery.reading.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.hero",
+      "path": "/images/eduhub/eduhub.hero.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.hero.graduates",
+      "path": "/images/eduhub/eduhub.hero.graduates.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.about.hero",
+      "path": "/images/eduhub/eduhub.about.hero.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.about.team",
+      "path": "/images/eduhub/eduhub.about.team.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.about.training",
+      "path": "/images/eduhub/eduhub.about.training.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.alumni.nour",
+      "path": "/images/eduhub/eduhub.alumni.nour.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.alumni.yasmine",
+      "path": "/images/eduhub/eduhub.alumni.yasmine.jpg",
+      "status": "ready"
+    },
+    {
+      "key": "eduhub.alumni.omar",
+      "path": "/images/eduhub/eduhub.alumni.omar.jpg",
+      "status": "ready"
+    }
+  ]
+}

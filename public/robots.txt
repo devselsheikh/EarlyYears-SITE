@@ -1,7 +1,15 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 Disallow: /admin
+Disallow: /workspace/
 Disallow: /workspace
 Disallow: /daycare/parents
+Disallow: /daycare/parent-info
+Disallow: /daycare/calendar
+Disallow: /daycare/facilities
+Disallow: /daycare/meals
+Disallow: /daycare/parent-guide
+Disallow: /thank-you
 
 Sitemap: https://theearlyyearscompany.com/sitemap.xml

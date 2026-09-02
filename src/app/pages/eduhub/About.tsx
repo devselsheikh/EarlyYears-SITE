@@ -4,44 +4,66 @@ import { Link } from 'react-router';
 import EduHubNav from '../../components/EduHubNav';
 import EduHubFooter from '../../components/EduHubFooter';
 import ManagedImage from '../../components/ManagedImage';
+import { useCMS } from '../../hooks/useCMS';
+import { isPublished } from '../../data/cms';
 
 export default function EduHubAbout() {
-  const team = [
+  const cms = useCMS();
+  const fallbackTeam = [
     {
       name: 'Nesreen Hassanin',
       role: 'Founder & Managing Director',
-      description: 'Visionary leader with decades of experience in early years education and teacher training.'
+      image: '/images/eduhub/team/nesreen-hassanin.jpg',
+      credentials: '30 years in early years · CACHE Levels 3 & 5 · M.Ed. Leadership',
+      description: 'An early years leader who has supported children, families, educators, and learning settings across Egypt, Saudi Arabia, and Dubai. Nesreen co-founded two nurseries and the Early Years Company, bringing practical leadership, training, and start-up expertise to every EduHub programme.'
     },
     {
       name: 'Lamia Hassanin',
       role: 'Co-Founder & Training Manager',
-      description: 'Expert trainer specializing in CACHE qualifications and professional development programs.'
+      image: '/images/eduhub/team/lamia-hassanin.jpg',
+      credentials: 'M.Ed. · SENCO · Parenting Coach · 23 years’ leadership',
+      description: 'Lamia oversees educational quality and training with more than two decades of early years management experience. Her work centres on inclusive, child-led learning and practical support for educators, families, and children with diverse learning needs.'
     },
     {
       name: 'Ann Osman',
       role: 'Trainer and Assessor',
-      description: 'Experienced educator providing training and assessment for CACHE qualifications.'
+      image: '/images/eduhub/team/ann-osman.jpg',
+      credentials: '27 years in education · Montessori · Child Psychology',
+      description: 'Ann brings extensive British and American curriculum experience, including early years leadership and inclusive education. Her workshops cover classroom management, Montessori practice, special educational needs, and confident staff development.'
     },
     {
       name: 'Bassent Barsoum',
-      role: 'Center Coordinator & Assessor',
-      description: 'Manages day-to-day operations and conducts workplace assessments for learners.'
+      role: 'Centre Coordinator & Assessor',
+      image: '/images/eduhub/team/bassent-barsoum.jpg',
+      credentials: 'B.A. Psychology, AUC · Professional Educator Diploma',
+      description: 'Bassent began as an early years educator after studying Psychology at AUC and joined Early Years in 2017. She now coordinates the centre and supports learners through assessment, helping educators turn their knowledge into confident professional practice.'
     },
     {
       name: 'Robert Mitton',
       role: 'Internal Quality Assurance Officer',
-      description: 'Ensures all programs meet UK standards and NCFE quality requirements.'
+      image: '/images/eduhub/team/robert-mitton.jpg',
+      credentials: 'Qualified Assessor & IQA · Vocational Training Specialist',
+      description: 'Robert combines vocational assessment, moderation, and quality-assurance expertise with first-hand knowledge of early years settings. He safeguards the consistency and UK-aligned quality of EduHub’s training and assessment.'
     }
   ];
+  const approvedNames = new Set(['Nesrin Hassanin', 'Nesreen Hassanin', 'Lamia Hassanin', 'Ann Osman', 'Bassent Barsoum', 'Robert Mitton']);
+  const managedTeam = cms.educators.filter(isPublished).filter(member => approvedNames.has(member.name)).sort((a, b) => a.displayOrder - b.displayOrder).map(member => ({
+    name: member.name === 'Nesrin Hassanin' ? 'Nesreen Hassanin' : member.name,
+    role: member.title,
+    image: member.img,
+    credentials: member.qualification,
+    description: member.bio,
+  }));
+  const team = managedTeam.length >= 5 ? managedTeam : fallbackTeam;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="eduhub-site min-h-screen bg-white">
       <EduHubNav />
 
       <main>
 
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-20 lg:py-32">
+      <section className="editorial-hero editorial-hero--educators relative py-16 sm:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -49,15 +71,20 @@ export default function EduHubAbout() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-5xl lg:text-6xl text-gray-900 mb-6">
-              About EduHub
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md text-gray-700 text-sm mb-5">
+              <Award className="w-4 h-4" />
+              <span className="font-semibold">Egypt’s First CACHE-Approved Centre</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-4">
+              About{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-violet-200">EduHub</span>
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-lg sm:text-xl text-blue-50 leading-relaxed max-w-3xl mx-auto">
               First CACHE-approved training centre in Egypt, providing UK-accredited professional development for early years educators across Egypt and the Middle East.
             </p>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Our Story */}
       <div className="py-20 lg:py-28">
@@ -193,18 +220,21 @@ export default function EduHubAbout() {
               {
                 name: 'NCFE',
                 role: 'Accrediting Organization',
+                logo: '/images/eduhub/accreditation/ncfe.png',
                 description: 'UK awarding organization recognized by UK regulators (Ofqual, CCEA Regulation, Qualifications Wales). NCFE provides official accreditation for all CACHE qualifications offered at EduHub.',
                 highlight: 'Official UK Awarding Body'
               },
               {
                 name: 'BriteThink UK',
                 role: 'Quality Assurance Partner',
+                logo: '/images/eduhub/accreditation/britethink.png',
                 description: 'BriteThink provides comprehensive support including quality assurance, educational content development, and assessment services for all EduHub programs.',
                 highlight: 'Assessment & QA Support'
               },
               {
                 name: 'CACHE',
                 role: 'Qualification Provider',
+                logo: '/images/eduhub/accreditation/cache.png',
                 description: 'Leading awarding organization for qualifications in early years, childcare, and education. CACHE qualifications are respected throughout the UK and internationally.',
                 highlight: 'Industry-Leading Qualifications'
               }
@@ -215,10 +245,10 @@ export default function EduHubAbout() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8"
+                className="eduhub-accreditation-card bg-white rounded-2xl p-6 sm:p-8 border border-blue-100"
               >
-                <div className="w-16 h-16 rounded-full bg-[#1349D1] flex items-center justify-center mb-6">
-                  <Award className="w-8 h-8 text-white" />
+                <div className="h-16 rounded-xl bg-[#F4F7FF] border border-[#DFE8FF] flex items-center px-5 mb-6">
+                  <img src={partner.logo} alt={`${partner.name} accreditation logo`} className="max-h-9 max-w-[12rem] w-auto object-contain" />
                 </div>
                 <h3 className="text-2xl text-gray-900 mb-2">{partner.name}</h3>
                 <div className="text-sm px-3 py-1 rounded-full bg-white text-[#1349D1] inline-block mb-4">
@@ -233,7 +263,7 @@ export default function EduHubAbout() {
       </div>
 
       {/* Meet The Team */}
-      <div className="py-20 lg:py-28 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="py-16 sm:py-20 lg:py-28 bg-[#f5f8ff]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -250,22 +280,25 @@ export default function EduHubAbout() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-6">
             {team.map((member, index) => (
               <motion.div
-                key={index}
+                key={member.name}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-8 shadow-lg text-center"
+                transition={{ duration: 0.45, delay: index * 0.06 }}
+                className={`group overflow-hidden bg-white rounded-[1.4rem] border border-blue-100 shadow-[0_12px_36px_rgba(19,73,209,0.08)] ${index < 2 ? 'lg:col-span-3' : 'lg:col-span-2'}`}
               >
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center mx-auto mb-6">
-                  <Users className="w-12 h-12 text-white" />
+                <div className={`overflow-hidden bg-blue-100 ${index < 2 ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+                  <img src={member.image} alt={`${member.name}, ${member.role}`} className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
                 </div>
-                <h3 className="text-2xl text-gray-900 mb-2">{member.name}</h3>
-                <div className="text-[#1349D1] mb-4">{member.role}</div>
-                <p className="text-gray-600 leading-relaxed">{member.description}</p>
+                <div className="p-5 sm:p-6 text-left">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-950 mb-1">{member.name}</h3>
+                  <div className="text-[#1349D1] font-semibold text-sm mb-3">{member.role}</div>
+                  <p className="text-xs font-semibold text-slate-500 mb-3 leading-relaxed">{member.credentials}</p>
+                  <p className="text-sm text-gray-600 leading-6">{member.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>

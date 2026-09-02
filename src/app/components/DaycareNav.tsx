@@ -7,10 +7,8 @@ import DaycareLogo from './DaycareLogo';
 const NAV_ITEMS = [
   { path: '/daycare', label: 'Home' },
   { path: '/daycare/programs', label: 'Programs' },
-  { path: '/daycare/parent-info', label: 'Parent Guide' },
-  { path: '/daycare/calendar', label: 'Facilities & Meals' },
   { path: '/blog?stream=parents', label: 'Blog' },
-  { path: '/daycare/parents', label: '🔒 Families' },
+  { path: '/daycare/parents', label: '🔒 Families · Guides & Menus' },
   { path: '/eduhub', label: 'EduHub ↗' },
 ];
 
@@ -21,7 +19,7 @@ export default function DaycareNav() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-white/95 backdrop-blur-lg border-b border-peach-100 sticky top-0 z-50 shadow-sm">
+    <nav className="daycare-nav bg-white/95 backdrop-blur-lg border-b border-peach-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
 

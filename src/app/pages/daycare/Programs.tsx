@@ -133,7 +133,7 @@ export default function DaycarePrograms() {
   const prog = PROGRAMS.find(p => p.id === active)!;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="daycare-site min-h-screen bg-white">
       <DaycareNav />
 
       <main>

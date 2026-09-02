@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { ChevronLeft, ChevronRight, Award } from 'lucide-react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { ImageWithFallback } from '../media/ImageWithFallback';
 import { loadCMS } from '../../data/cms';
 import ManagedImage from '../ManagedImage';
 import { EDUCATOR_KEYS } from '../../data/assetManifest';

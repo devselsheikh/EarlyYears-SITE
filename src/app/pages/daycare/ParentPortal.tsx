@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Lock, FileText, Camera, UtensilsCrossed, Calendar, ClipboardList,
   Download, LogOut, Star, Heart, ChevronRight, Bell, BookOpen,
-  CheckCircle2, AlertCircle, Clock, Leaf, Sun,
+  CheckCircle2, AlertCircle, Clock, Leaf, Sun, ArrowRight, ShieldCheck, MessageCircle,
 } from 'lucide-react';
 import DaycareNav from '../../components/DaycareNav';
 import DaycareFooter from '../../components/DaycareFooter';
+import DaycareLogo from '../../components/DaycareLogo';
+import ManagedImage from '../../components/ManagedImage';
 import { supabase, supabaseConfigured } from '../../utils/supabase/client';
 import { useCMS } from '../../hooks/useCMS';
 import type { CMSCalendarEvent, CMSPortalFile, CMSMeals } from '../../data/cms';
@@ -56,86 +58,28 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-peach-50 via-white to-coral-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ type: 'spring', damping: 20 }}
-        className="w-full max-w-sm"
-      >
-        {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-br from-peach-400 via-coral-500 to-pink-500 px-8 pt-8 pb-10 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
-              <Lock className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white">Family Portal</h1>
-            <p className="text-white/75 text-sm mt-1">Early Years — The Daycare</p>
-          </div>
-
-          {/* Body */}
-          <div className="px-8 py-7 space-y-5">
-            <p className="text-sm text-gray-500 text-center leading-relaxed">
-              This shared information space is for approved families. No individual child profile is required—enter the PIN supplied by the nursery team.
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="relative">
-                <input
-                  aria-label="Parent Portal PIN"
-                  type="password"
-                  value={pin}
-                  onChange={e => setPin(e.target.value)}
-                  placeholder="• • • •"
-                  maxLength={8}
-                  autoFocus
-                  className="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-center text-2xl tracking-[0.6em] font-mono focus:outline-none focus:border-peach-400 transition-colors placeholder:tracking-normal placeholder:text-gray-300"
-                />
-              </div>
-
-              <AnimatePresence>
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="text-xs text-red-600 text-center flex items-center justify-center gap-1"
-                  >
-                    <AlertCircle className="w-3.5 h-3.5" /> {error}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-
-              <button
-                type="submit"
-                disabled={checking || pin.length < 4}
-                className="w-full py-3.5 bg-gradient-to-r from-peach-400 to-coral-500 text-white rounded-2xl font-bold hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-40 disabled:scale-100"
-              >
-                {checking ? 'Checking…' : 'Enter Portal →'}
-              </button>
-            </form>
-
-            <p className="text-xs text-gray-600 text-center">
-              Need your PIN?{' '}
-              <a href="/daycare/contact" className="text-orange-700 hover:underline font-medium">Contact us</a>
-            </p>
-          </div>
-        </div>
-
-        {/* What's inside teaser */}
-        <div className="mt-4 grid grid-cols-3 gap-2">
-          {[
-            { icon: FileText, label: 'Newsletters' },
-            { icon: UtensilsCrossed, label: 'Full Menu' },
-            { icon: Calendar, label: 'Calendar' },
-          ].map(({ icon: Icon, label }) => (
-            <div key={label} className="bg-white/70 backdrop-blur rounded-2xl p-3 text-center border border-white/80">
-              <Icon className="w-5 h-5 text-gray-400 mx-auto mb-1" />
-              <p className="text-[10px] text-gray-500 font-medium">{label}</p>
-            </div>
-          ))}
-        </div>
+    <main className="family-gate">
+      <header className="family-gate__header"><a href="/daycare" aria-label="Early Years Daycare home"><DaycareLogo /></a><a href="/daycare">Back to daycare <ArrowRight aria-hidden="true" /></a></header>
+      <motion.div initial={{ opacity: 0, transform: 'translateY(10px)' }} animate={{ opacity: 1, transform: 'translateY(0)' }} transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }} className="family-gate__layout">
+        <section className="family-gate__story" aria-labelledby="family-portal-title">
+          <div className="family-gate__art" aria-hidden="true"><span>●</span><span>★</span><span>♥</span><Heart /></div>
+          <div><p className="platform-eyebrow">For Early Years families</p><h1 id="family-portal-title">The useful bits, always close by.</h1><p>Parent guides, facilities, menus, calendars, newsletters, and nursery forms—all gathered into one secure family space.</p></div>
+          <div className="family-gate__features" aria-label="Available family information">{[{ icon: BookOpen, label: 'Parent guide' }, { icon: UtensilsCrossed, label: 'Lunch menu' }, { icon: Camera, label: 'Facilities' }].map(({ icon: Icon, label }) => <span key={label}><Icon aria-hidden="true" />{label}</span>)}</div>
+        </section>
+        <section className="family-gate__entry">
+          <span className="family-gate__lock"><Lock aria-hidden="true" /></span>
+          <p className="platform-eyebrow">Shared Family Portal</p>
+          <h2>Family Portal</h2>
+          <p>This shared information space is for approved families. No individual child profile is required—enter the PIN supplied by the nursery team.</p>
+          <form onSubmit={handleSubmit} className="family-gate__form">
+            <label htmlFor="family-portal-pin">Family PIN</label>
+            <input id="family-portal-pin" aria-label="Parent Portal PIN" type="password" inputMode="numeric" autoComplete="one-time-code" value={pin} onChange={e => setPin(e.target.value.replace(/\D/g, ''))} placeholder="• • • •" maxLength={8} autoFocus />
+            <AnimatePresence>{error && <motion.p initial={{ opacity: 0, transform: 'translateY(-4px)' }} animate={{ opacity: 1, transform: 'translateY(0)' }} exit={{ opacity: 0 }} className="family-gate__error" role="alert"><AlertCircle aria-hidden="true" /> {error}</motion.p>}</AnimatePresence>
+            <button type="submit" disabled={checking || pin.length < 4}>{checking ? 'Checking securely…' : 'Open Family Portal'} {!checking && <ArrowRight aria-hidden="true" />}</button>
+          </form>
+          <div className="family-gate__help"><MessageCircle aria-hidden="true" /><span><strong>Need the family PIN?</strong><small>Ask the nursery team or contact Early Years.</small></span><a href="/daycare/contact">Contact us</a></div>
+          <a className="family-gate__account" href="/workspace"><ShieldCheck aria-hidden="true" /><span><strong>Have an individual child account?</strong><small>Use your email and password in the secure workspace.</small></span><ArrowRight aria-hidden="true" /></a>
+        </section>
       </motion.div>
     </main>
   );
@@ -143,15 +87,15 @@ function PinGate({ onSuccess }: { onSuccess: () => void }) {
 
 // ─── Section types ────────────────────────────────────────────────────────────
 
-type Section = 'home' | 'newsletters' | 'classroom' | 'menu' | 'calendar' | 'forms';
+type Section = 'home' | 'newsletters' | 'facilities' | 'menu' | 'calendar' | 'forms';
 
 const SECTIONS: { id: Section; label: string; icon: React.FC<{ className?: string }>; desc: string }[] = [
   { id: 'home',        label: 'Overview',     icon: Star,           desc: 'Your family hub' },
   { id: 'newsletters', label: 'Newsletters',   icon: FileText,       desc: 'Monthly updates' },
   { id: 'menu',        label: 'Lunch Menu',    icon: UtensilsCrossed,desc: 'Full seasonal menu' },
   { id: 'calendar',    label: 'Calendar',      icon: Calendar,       desc: 'Term dates & events' },
-  { id: 'forms',       label: 'Forms & Files', icon: ClipboardList,  desc: 'Downloads' },
-  { id: 'classroom',   label: 'Classroom',     icon: Camera,         desc: 'Photos & updates' },
+  { id: 'forms',       label: 'Parent Guide',  icon: BookOpen,       desc: 'Guides & downloads' },
+  { id: 'facilities',  label: 'Facilities',    icon: Camera,         desc: 'Private spaces' },
 ];
 
 const EVENT_COLORS: Record<CMSCalendarEvent['type'], string> = {
@@ -182,13 +126,13 @@ function PortalContent({ onLogout }: { onLogout: () => void }) {
     .slice(0, 4);
 
   return (
-    <div className="min-h-screen bg-[#faf9f7]">
+    <div className="family-portal min-h-screen bg-[#fffaf5]">
       <DaycareNav />
 
       <main>
 
       {/* Portal header */}
-      <div className="bg-gradient-to-br from-peach-400 via-coral-500 to-pink-500 relative overflow-hidden">
+      <div className="family-portal__hero bg-gradient-to-br from-peach-400 via-coral-500 to-pink-500 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 30% 50%, white 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex items-center justify-between gap-4 mb-6">
@@ -211,7 +155,7 @@ function PortalContent({ onLogout }: { onLogout: () => void }) {
           </div>
 
           {/* Section tab bar */}
-          <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+          <div className="family-portal__tabs flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             {SECTIONS.map(s => {
               const Icon = s.icon;
               const active = activeSection === s.id;
@@ -250,7 +194,7 @@ function PortalContent({ onLogout }: { onLogout: () => void }) {
             {activeSection === 'menu'        && <MenuSection meals={meals} menuFiles={menuFiles} />}
             {activeSection === 'calendar'    && <CalendarSection events={calendarEvents} />}
             {activeSection === 'forms'       && <FormsSection files={[...forms, ...menuFiles]} />}
-            {activeSection === 'classroom'   && <ClassroomSection />}
+            {activeSection === 'facilities'  && <FacilitiesSection />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -282,7 +226,7 @@ function HomeOverview({
         <div>
           <h2 className="font-bold text-gray-900 text-lg">Welcome to your Family Portal</h2>
           <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-            Everything you need — newsletters, full menus, the term calendar, and downloadable forms — all in one private place.
+            Everything you need — the parent guide, facilities, full menus, term calendar, newsletters, and forms — all in one private place.
           </p>
         </div>
       </div>
@@ -293,7 +237,7 @@ function HomeOverview({
           { id: 'newsletters' as Section, icon: FileText,        label: 'Newsletters',   color: 'from-blue-50 to-indigo-50', border: 'border-blue-100', iconColor: 'text-blue-500', count: newsletters.length },
           { id: 'menu'        as Section, icon: UtensilsCrossed, label: 'Lunch Menus',   color: 'from-emerald-50 to-teal-50', border: 'border-emerald-100', iconColor: 'text-emerald-600', count: 4 },
           { id: 'calendar'    as Section, icon: Calendar,        label: 'Calendar',      color: 'from-purple-50 to-violet-50', border: 'border-purple-100', iconColor: 'text-purple-500', count: upcomingEvents.length },
-          { id: 'forms'       as Section, icon: ClipboardList,   label: 'Forms & Files', color: 'from-amber-50 to-orange-50', border: 'border-amber-100', iconColor: 'text-amber-600', count: forms.length },
+          { id: 'forms'       as Section, icon: BookOpen,         label: 'Parent Guide',  color: 'from-amber-50 to-orange-50', border: 'border-amber-100', iconColor: 'text-amber-600', count: forms.length },
         ] as const).map(item => {
           const Icon = item.icon;
           return (
@@ -741,19 +685,29 @@ function FormsSection({ files }: { files: CMSPortalFile[] }) {
   );
 }
 
-// ─── Classroom ────────────────────────────────────────────────────────────────
+// ─── Facilities ───────────────────────────────────────────────────────────────
 
-function ClassroomSection() {
+function FacilitiesSection() {
+  const spaces = [
+    { key: 'daycare.gallery.classroom', label: 'Learning classrooms' },
+    { key: 'daycare.gallery.sensory', label: 'Sensory activity areas' },
+    { key: 'daycare.gallery.playground', label: 'Outdoor playground' },
+    { key: 'daycare.gallery.dining', label: 'Dining area' },
+    { key: 'daycare.gallery.reading', label: 'Reading corner' },
+  ];
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-gray-900">Classroom Updates</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Photos and updates from your child's room.</p>
+        <h2 className="text-xl font-bold text-gray-900">Facilities & Learning Spaces</h2>
+        <p className="text-sm text-gray-500 mt-0.5">A closer look at the spaces used by enrolled children.</p>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        {spaces.map((space, index) => <figure key={space.key} className={`overflow-hidden rounded-2xl bg-white border border-peach-100 ${index === 0 ? 'col-span-2' : ''}`}><ManagedImage assetKey={space.key} alt={space.label} className="w-full aspect-[4/3] object-cover" /><figcaption className="px-3 py-2 text-xs font-semibold text-gray-700">{space.label}</figcaption></figure>)}
       </div>
       <div className="bg-white border border-dashed border-gray-300 rounded-2xl p-12 text-center space-y-3">
         <Camera className="w-10 h-10 text-gray-300 mx-auto" />
         <div>
-          <p className="font-semibold text-gray-600 mb-1">Private gallery — coming soon</p>
+          <p className="font-semibold text-gray-600 mb-1">Classroom updates are coming next</p>
           <p className="text-sm text-gray-400 leading-relaxed max-w-sm mx-auto">
             A private photo gallery for each classroom is in development. Photos are currently shared via class WhatsApp groups.
           </p>

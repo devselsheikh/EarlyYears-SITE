@@ -7,7 +7,7 @@ import ManagedImage from '../../components/ManagedImage';
 
 export default function DaycareAbout() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="daycare-site min-h-screen bg-white">
       <DaycareNav />
 
       <main>

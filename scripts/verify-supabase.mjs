@@ -42,6 +42,7 @@ const services = [
   ['Parent consents', 'child_consents'],
   ['Daily care reports', 'child_daily_reports'],
   ['Daily care audit history', 'child_daily_report_revisions'],
+  ['Workspace invitations', 'workspace_invitations'],
 ];
 
 const failures = [];

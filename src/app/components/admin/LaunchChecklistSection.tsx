@@ -38,7 +38,6 @@ const CHECKLIST: CheckItem[] = [
   { id: 'nav-links', label: 'All navigation links working', category: 'CTAs & Navigation' },
   { id: 'footer-links', label: 'Footer links verified (no dead links)', category: 'CTAs & Navigation' },
   // Verification
-  { id: 'claims-verified', label: 'All public claims reviewed in Claims & Verification', hint: 'Mark unverified claims as hidden', category: 'Verification' },
   { id: 'content-health', label: 'Content Health showing no critical warnings', category: 'Verification' },
   { id: 'owner-approved', label: 'Owner has reviewed and approved the live site', category: 'Verification' },
 ];

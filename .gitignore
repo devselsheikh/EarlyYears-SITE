@@ -10,3 +10,4 @@ dist/
 public/images/slots/.history/
 playwright-report/
 test-results/
+artifacts/

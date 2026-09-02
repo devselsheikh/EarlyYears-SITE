@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router';
+import { useParams, Link, Navigate } from 'react-router';
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
@@ -11,7 +11,7 @@ import EduHubNav from '../components/EduHubNav';
 import EduHubFooter from '../components/EduHubFooter';
 import { getPostBySlug, getRelatedPosts, BlogSection } from '../data/blogPosts';
 import { useCMS } from '../hooks/useCMS';
-import { isPublished, CMSBlogArticle } from '../data/cms';
+import { isPublished, isEditorialArticle, CMSBlogArticle } from '../data/cms';
 import { JsonLd, articleSchema, breadcrumbSchema } from '../components/JsonLd';
 
 // ─── Simple markdown body → BlogSection[] ────────────────
@@ -213,11 +213,12 @@ function RelatedCard({ post, stream }: { post: PostView; stream: 'parents' | 'ed
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const cms = useCMS();
+  const isLegacyNewsletter = slug?.startsWith('newsletter-') === true;
 
   // Try CMS blog first
-  const cmsArticle = slug ? cms.blog.find(a => a.slug === slug && isPublished(a)) : undefined;
+  const cmsArticle = slug ? cms.blog.find(a => a.slug === slug && isPublished(a) && isEditorialArticle(a)) : undefined;
   // Fall back to hardcoded
-  const hardcodedPost = !cmsArticle && slug ? getPostBySlug(slug) : undefined;
+  const hardcodedPost = !isLegacyNewsletter && !cmsArticle && slug ? getPostBySlug(slug) : undefined;
 
   const post: PostView | undefined = cmsArticle
     ? cmsToView(cmsArticle)
@@ -228,7 +229,7 @@ export default function BlogPost() {
   // Related posts from same source
   const related: PostView[] = cmsArticle
     ? cms.blog
-        .filter(a => isPublished(a) && a.slug !== slug && a.audience === cmsArticle.audience)
+        .filter(a => isPublished(a) && isEditorialArticle(a) && a.slug !== slug && a.audience === cmsArticle.audience)
         .slice(0, 3)
         .map(cmsToView)
     : hardcodedPost
@@ -247,6 +248,8 @@ export default function BlogPost() {
       metaDesc.setAttribute('content', post.metaDescription);
     }
   }, [post]);
+
+  if (isLegacyNewsletter) return <Navigate to="/daycare/parents" replace />;
 
   if (!post) {
     return (
@@ -272,7 +275,7 @@ export default function BlogPost() {
   const s = cms.siteSettings;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`${post.stream === 'parents' ? 'daycare-site' : 'eduhub-site'} editorial-hub min-h-screen bg-white`}>
       <JsonLd data={[
         articleSchema({ title: post.metaTitle, description: post.metaDescription, url: `${siteUrl}/blog/${post.slug}`, publishDate: post.date, image: post.featuredImage, publisherName: s.companyName }),
         breadcrumbSchema([
@@ -304,7 +307,16 @@ export default function BlogPost() {
             </div>
 
             {post.featuredImage
-              ? <div className="rounded-2xl overflow-hidden mb-6 h-56 sm:h-72"><img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" /></div>
+              ? <div className="rounded-2xl overflow-hidden mb-6 h-56 sm:h-72"><img
+                  src={post.featuredImage}
+                  alt={post.title}
+                  onError={event => {
+                    const fallback = post.stream === 'parents' ? '/images/daycare/daycare.section.classroom-2.jpg' : '/images/eduhub/eduhub.about.training.jpg';
+                    if (event.currentTarget.src.endsWith(fallback)) return;
+                    event.currentTarget.src = fallback;
+                  }}
+                  className="w-full h-full object-cover"
+                /></div>
               : <div className="text-6xl mb-5">{post.emoji}</div>
             }
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-5">{post.title}</h1>

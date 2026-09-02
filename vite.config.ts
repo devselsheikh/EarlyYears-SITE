@@ -5,21 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
 
-function figmaAssetResolver() {
-  return {
-    name: 'figma-asset-resolver',
-    resolveId(id) {
-      if (id.startsWith('figma:asset/')) {
-        const filename = id.replace('figma:asset/', '')
-        return path.resolve(__dirname, 'src/assets', filename)
-      }
-    },
-  }
-}
-
 function localImageSlotWriter() {
-  const slotRoot = path.resolve(__dirname, 'public', 'images', 'slots')
-  const historyRoot = path.join(slotRoot, '.history')
+  const imageRoot = path.resolve(__dirname, 'public', 'images')
 
   return {
     name: 'local-image-slot-writer',
@@ -34,6 +21,10 @@ function localImageSlotWriter() {
           res.end(JSON.stringify({ error: 'Invalid asset key' }))
           return
         }
+
+        const brand = assetKey.startsWith('eduhub.') ? 'eduhub' : 'daycare'
+        const slotRoot = path.join(imageRoot, brand)
+        const historyRoot = path.join(slotRoot, '.history')
 
         const candidates = fs.readdirSync(slotRoot)
           .filter(filename => path.parse(filename).name === assetKey && /\.(jpe?g|png|webp|avif)$/i.test(filename))
@@ -73,7 +64,7 @@ function localImageSlotWriter() {
             fs.copyFileSync(target, path.join(assetHistory, `${timestamp}-${candidates[0]}`))
             fs.writeFileSync(target, Buffer.concat(chunks))
             res.setHeader('Content-Type', 'application/json')
-            res.end(JSON.stringify({ ok: true, key: assetKey, path: `/images/slots/${candidates[0]}`, bytes: size }))
+            res.end(JSON.stringify({ ok: true, key: assetKey, path: `/images/${brand}/${candidates[0]}`, bytes: size }))
           } catch (error) {
             res.statusCode = 500
             res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }))
@@ -86,7 +77,6 @@ function localImageSlotWriter() {
 
 export default defineConfig({
   plugins: [
-    figmaAssetResolver(),
     localImageSlotWriter(),
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove them

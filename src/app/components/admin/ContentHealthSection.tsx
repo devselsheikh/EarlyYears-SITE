@@ -62,17 +62,15 @@ function runChecks(cms: CMSContent): HealthIssue[] {
   // ── EDUCATORS ──────────────────────────────────────────────────────────────
   const publishedEducators = cms.educators.filter(isPublished);
   publishedEducators.forEach(e => {
-    if (!e.img || e.img === '/lamia-hassanin.png') {
+    if (!e.img) {
       issues.push({
         id: `educator-img-${e.id}`,
         severity: 'error',
         category: 'Missing Image',
         title: `${e.name}: portrait image broken or missing`,
-        detail: e.name === 'Lamia Hassanin'
-          ? 'Lamia Hassanin\'s portrait path "/lamia-hassanin.png" does not resolve. Upload a verified portrait via Image Assets.'
-          : `${e.name} has no portrait image set.`,
-        action: 'Upload portrait in Image Assets.',
-        sectionId: 'assets',
+        detail: `${e.name} has no portrait image set.`,
+        action: 'Add the portrait path in Company Team.',
+        sectionId: 'educators',
       });
     }
     if (!e.bio || e.bio.trim().length < 30) {

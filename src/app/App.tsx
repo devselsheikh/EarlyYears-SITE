@@ -1,18 +1,19 @@
 import React, { lazy, Suspense } from 'react';
 import { MotionConfig } from 'motion/react';
-import { RouterProvider, createBrowserRouter } from 'react-router';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router';
 import ScrollToTop from './components/ScrollToTop';
 import BackToTopButton from './components/BackToTopButton';
 import PageTransition from './components/PageTransition';
+import RouteErrorPage from './components/RouteErrorPage';
+import RouteMetadata from './components/RouteMetadata';
+import PrivacyControls from './components/PrivacyControls';
+import Landing from './pages/Landing';
 
-const Landing = lazy(() => import('./pages/Landing'));
 const StickyMobileCTA = lazy(() => import('./components/StickyMobileCTA'));
 const DaycareHome = lazy(() => import('./pages/daycare/Home'));
 const DaycareAbout = lazy(() => import('./pages/daycare/About'));
 const DaycarePrograms = lazy(() => import('./pages/daycare/Programs'));
-const DaycareParentInfo = lazy(() => import('./pages/daycare/ParentInfo'));
 const DaycareContact = lazy(() => import('./pages/daycare/Contact'));
-const DaycareCalendar = lazy(() => import('./pages/daycare/Calendar'));
 const ParentPortal = lazy(() => import('./pages/daycare/ParentPortal'));
 const EduHubHome = lazy(() => import('./pages/eduhub/Home'));
 const EduHubPrograms = lazy(() => import('./pages/eduhub/Programs'));
@@ -24,6 +25,8 @@ const BlogPost = lazy(() => import('./pages/BlogPost'));
 const ContactSplit = lazy(() => import('./pages/ContactSplit'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Workspace = lazy(() => import('./pages/Workspace'));
+const Legal = lazy(() => import('./pages/Legal'));
+const ThankYou = lazy(() => import('./pages/ThankYou'));
 
 function RouteFallback() {
   return (
@@ -38,7 +41,9 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ScrollToTop />
+      <RouteMetadata />
       <BackToTopButton />
+      <PrivacyControls />
       <Suspense fallback={null}><StickyMobileCTA /></Suspense>
       <Suspense fallback={<RouteFallback />}>
         <PageTransition>{children}</PageTransition>
@@ -47,7 +52,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: <AppLayout><Landing /></AppLayout>,
@@ -66,11 +71,23 @@ const router = createBrowserRouter([
   },
   {
     path: '/daycare/parent-info',
-    element: <AppLayout><DaycareParentInfo /></AppLayout>,
+    element: <Navigate to="/daycare/parents" replace />,
   },
   {
     path: '/daycare/calendar',
-    element: <AppLayout><DaycareCalendar /></AppLayout>,
+    element: <Navigate to="/daycare/parents" replace />,
+  },
+  {
+    path: '/daycare/facilities',
+    element: <Navigate to="/daycare/parents" replace />,
+  },
+  {
+    path: '/daycare/meals',
+    element: <Navigate to="/daycare/parents" replace />,
+  },
+  {
+    path: '/daycare/parent-guide',
+    element: <Navigate to="/daycare/parents" replace />,
   },
   {
     path: '/daycare/contact',
@@ -87,6 +104,10 @@ const router = createBrowserRouter([
   {
     path: '/eduhub/programs',
     element: <AppLayout><EduHubPrograms /></AppLayout>,
+  },
+  {
+    path: '/eduhub/courses',
+    element: <Navigate to="/eduhub/programs" replace />,
   },
   {
     path: '/eduhub/programs/:id',
@@ -113,6 +134,18 @@ const router = createBrowserRouter([
     element: <AppLayout><ContactSplit /></AppLayout>,
   },
   {
+    path: '/thank-you',
+    element: <AppLayout><ThankYou /></AppLayout>,
+  },
+  {
+    path: '/privacy',
+    element: <AppLayout><Legal type="privacy" /></AppLayout>,
+  },
+  {
+    path: '/terms',
+    element: <AppLayout><Legal type="terms" /></AppLayout>,
+  },
+  {
     path: '/admin',
     element: <Suspense fallback={<RouteFallback />}><Admin /></Suspense>,
   },
@@ -120,7 +153,16 @@ const router = createBrowserRouter([
     path: '/workspace',
     element: <Suspense fallback={<RouteFallback />}><Workspace /></Suspense>,
   },
-]);
+  {
+    path: '*',
+    element: <RouteErrorPage notFound />,
+  },
+];
+
+const router = createBrowserRouter(routes.map(route => ({
+  ...route,
+  errorElement: <RouteErrorPage />,
+})));
 
 export default function App() {
   return (

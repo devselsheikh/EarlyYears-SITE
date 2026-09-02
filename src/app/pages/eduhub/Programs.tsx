@@ -4,9 +4,12 @@ import { Link } from 'react-router';
 import EduHubNav from '../../components/EduHubNav';
 import EduHubFooter from '../../components/EduHubFooter';
 import ManagedImage from '../../components/ManagedImage';
+import { useCMS } from '../../hooks/useCMS';
+import { isPublished } from '../../data/cms';
 
 export default function EduHubPrograms() {
-  const programs = [
+  const cms = useCMS();
+  const fallbackPrograms = [
     {
       level: 'CACHE Level 2',
       title: 'Caring for Children and Young People',
@@ -101,15 +104,25 @@ export default function EduHubPrograms() {
       ]
     }
   ];
+  const managedPrograms = cms.courses
+    .filter(course => isPublished({ status: course.publishStatus, active: course.active }))
+    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .map(course => ({
+      ...course,
+      bgColor: course.lightBg.replace('bg-', 'from-') + ' to-white',
+      entryRequirements: ['Contact our team to confirm entry requirements', 'English proficiency appropriate to the course'],
+      whoFor: course.outcomes.map(outcome => `Learners developing: ${outcome}`),
+    }));
+  const programs = managedPrograms.length > 0 ? managedPrograms : fallbackPrograms;
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="eduhub-site min-h-screen bg-white">
       <EduHubNav />
 
       <main>
 
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 py-20 lg:py-32">
+      <section className="editorial-hero editorial-hero--educators relative py-16 sm:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -117,15 +130,20 @@ export default function EduHubPrograms() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <h1 className="text-5xl lg:text-6xl text-gray-900 mb-6">
-              CACHE Qualification Programs
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-md text-gray-700 text-sm mb-5">
+              <GraduationCap className="w-4 h-4" />
+              <span className="font-semibold">UK-Accredited Qualifications</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white font-bold mb-4">
+              CACHE Qualification{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-violet-200">Programs</span>
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-lg sm:text-xl text-blue-50 leading-relaxed max-w-3xl mx-auto">
               UK-accredited CACHE qualifications from Level 2 to Level 5 leadership, recognized across Egypt and the Middle East.
             </p>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       {/* Programs Detail */}
       <div className="py-20 lg:py-28">
@@ -290,16 +308,19 @@ export default function EduHubPrograms() {
               {
                 name: 'NCFE',
                 role: 'Accrediting Organization',
+                logo: '/images/eduhub/accreditation/ncfe.png',
                 description: 'UK awarding organization recognized by UK regulators, providing official accreditation for all CACHE qualifications.'
               },
               {
                 name: 'BriteThink UK',
                 role: 'Quality Assurance Partner',
+                logo: '/images/eduhub/accreditation/britethink.png',
                 description: 'Provides support, quality assurance, educational content, and assessment services for all programs.'
               },
               {
                 name: 'CACHE',
                 role: 'Qualification Provider',
+                logo: '/images/eduhub/accreditation/cache.png',
                 description: 'Leading awarding organization for qualifications in early years, childcare, and education sectors.'
               }
             ].map((partner, index) => (
@@ -309,10 +330,10 @@ export default function EduHubPrograms() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-8 shadow-lg"
+                className="eduhub-accreditation-card bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-100"
               >
-                <div className="w-16 h-16 rounded-full bg-[#1349D1] flex items-center justify-center mb-6">
-                  <Award className="w-8 h-8 text-white" />
+                <div className="h-16 rounded-xl bg-[#F4F7FF] border border-[#DFE8FF] flex items-center px-5 mb-6">
+                  <img src={partner.logo} alt={`${partner.name} accreditation logo`} className="max-h-9 max-w-[12rem] w-auto object-contain" />
                 </div>
                 <h3 className="text-2xl text-gray-900 mb-2">{partner.name}</h3>
                 <div className="text-sm text-[#1349D1] mb-4">{partner.role}</div>

@@ -83,8 +83,7 @@ export default function DaycareFooter() {
               {[
                 { to: '/daycare/about', label: 'About Us' },
                 { to: '/daycare/programs', label: 'Programmes' },
-                { to: '/daycare/calendar', label: 'Calendar & Menu' },
-                { to: '/daycare/parent-info', label: 'Parent Information' },
+                { to: '/daycare/parents', label: '🔒 Family Guides & Menus' },
                 { to: '/daycare/contact', label: 'Contact' },
               ].map(({ to, label }) => (
                 <li key={to}>
@@ -116,9 +115,7 @@ export default function DaycareFooter() {
         </div>
 
         <div className="pt-8 border-t border-peach-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="text-sm text-gray-500">
-            {s.footerCopyright || '© 2026 Early Years Company. All rights reserved.'}
-          </div>
+          <div><div className="text-sm text-gray-500">{s.footerCopyright || '© 2026 Early Years Company. All rights reserved.'}</div><div className="flex gap-3 mt-2 text-xs text-gray-600"><Link to="/privacy" className="hover:text-coral-700">Privacy</Link><Link to="/terms" className="hover:text-coral-700">Terms</Link></div></div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             Trusted by <span className="font-semibold text-peach-600 mx-1">200+ families</span> since 2001
           </div>

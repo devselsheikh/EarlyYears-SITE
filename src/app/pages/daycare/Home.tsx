@@ -1,4 +1,4 @@
-import image_IMG_20211012_WA0027 from "../../../imports/IMG-20211012-WA0027.jpg";
+const image_IMG_20211012_WA0027 = '/images/daycare/campus-original.jpg';
 import {
   motion,
   useScroll,
@@ -349,7 +349,7 @@ const EDUCATORS = [
     title: "Managing Director",
     cert: "M.Ed. (in progress) | CACHE Level 3 | 30 Years Experience",
     bio: "Early Years expert with 30 years across the Middle East, co-founder of Early Years Company and two nursery schools in Egypt. Career spans direct childcare, nursery management, staff training, and startup advisory. Holds a CACHE Level 3 in Early Childhood Education and is completing a Master's in Leadership in Education — driven by a lifelong belief that quality Early Years care shapes every child's future.",
-    img: "/nesrin-hassanin.png",
+    img: "/images/daycare/team/nesreen-hassanin.jpg",
     badge: "🏛️ EYC Co-Founder",
   },
   {
@@ -357,7 +357,7 @@ const EDUCATORS = [
     title: "Educational Coordinator",
     cert: "AUC Early Years Education | SENCo (LRC) | Parenting Coach (Intellect)",
     bio: "A founding member of Early Years Company with 18+ years at Cairo's most reputable nursery, where she rose to Deputy Head. Holds an Early Years Education degree from AUC, SENCo certification from LRC, and a Parenting Coach qualification from Intellect. Passionate advocate for child-led, play-based learning at every child's own pace.",
-    img: "/lamia-hassanin.png",
+    img: "/images/daycare/team/lamia-hassanin.jpg",
     badge: "🏛️ EYC Co-Founder",
   },
   {
@@ -722,13 +722,14 @@ export default function DaycareHome() {
   const cmsEducators = useMemo(() => {
     return cms.educators
       .filter(isPublished)
+      .filter((educator) => educator.name === 'Nesrin Hassanin' || educator.name === 'Nesreen Hassanin' || educator.name === 'Lamia Hassanin')
       .sort((a, b) => a.displayOrder - b.displayOrder)
       .map((e) => ({
         name: e.name,
         title: e.title,
         cert: e.qualification,
         bio: e.bio,
-        img: e.img,
+        img: e.name === 'Lamia Hassanin' ? '/images/daycare/team/lamia-hassanin.jpg' : '/images/daycare/team/nesreen-hassanin.jpg',
         badge: e.specialtyBadge,
         leadership: e.leadership,
       }));
@@ -738,7 +739,7 @@ export default function DaycareHome() {
   const siteUrl = 'https://theearlyyearscompany.com';
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="daycare-site min-h-screen bg-white overflow-x-hidden">
       <JsonLd data={[
         organizationSchema({ name: s.companyName, url: siteUrl, phone: s.mainPhone, email: s.mainEmail }),
         childCareSchema({ name: `${s.companyName} — Nursery & Daycare`, url: `${siteUrl}/daycare`, phone: s.daycarePhone || s.mainPhone, email: s.daycareEmail || s.mainEmail, description: hero.subtitle || 'Play-based EYFS nursery for children aged 1–5 in New Cairo.', openingHours: 'Su-Th 07:30-17:00' }),
@@ -840,11 +841,11 @@ export default function DaycareHome() {
 
               {/* Download brochure */}
               <Link
-                to="/daycare/parent-info"
+                to="/daycare/parents"
                 className="inline-flex items-center gap-1.5 mt-4 text-sm text-gray-500 hover:text-teal-600 transition-colors"
               >
                 <Download className="w-4 h-4" />
-                Download Parent Information Pack
+                Open Family Guide 🔒
               </Link>
             </motion.div>
 
@@ -1315,11 +1316,11 @@ export default function DaycareHome() {
                 Book a Free Consultation
               </Link>
               <Link
-                to="/daycare/parent-info"
+                to="/daycare/parents"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl border-2 border-gray-200 text-gray-700 font-bold hover:border-peach-300 transition-all"
               >
                 <Download className="w-5 h-5" />
-                Download Program Guide
+                Open Family Guide 🔒
               </Link>
             </div>
           </div>
@@ -1496,7 +1497,7 @@ export default function DaycareHome() {
       ══════════════════════════════════════════════════════════ */}
       <EducatorsCarousel
         educators={
-          cmsEducators.length > 0 ? cmsEducators : EDUCATORS
+          cmsEducators.length > 0 ? cmsEducators : EDUCATORS.slice(0, 2)
         }
       />
 
@@ -1566,10 +1567,10 @@ export default function DaycareHome() {
                 ))}
               </div>
               <Link
-                to="/daycare/parent-info"
+                to="/daycare/parents"
                 className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-700 transition-colors"
               >
-                Download Parent Information Pack
+                Open Family Guide 🔒
                 <ChevronRight className="w-5 h-5" />
               </Link>
             </motion.div>

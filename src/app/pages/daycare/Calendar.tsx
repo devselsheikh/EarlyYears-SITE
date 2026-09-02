@@ -2,9 +2,11 @@ import { motion } from 'motion/react';
 import { Calendar as CalendarIcon, Utensils, Download } from 'lucide-react';
 import DaycareNav from '../../components/DaycareNav';
 import DaycareFooter from '../../components/DaycareFooter';
+import { useCMS } from '../../hooks/useCMS';
 
 export default function DaycareCalendar() {
-  const calendarEvents = [
+  const cms = useCMS();
+  const legacyCalendarEvents = [
     { event: 'Staff & Newcomers Induction week', date: 'August 26th-28th, 2025', type: 'planning' },
     { event: 'Planning and setting up week', date: 'August 26th-28th, 2025', type: 'planning' },
     { event: 'Parents Orientation Day', date: 'August 31st, 2025', type: 'parent' },
@@ -49,7 +51,13 @@ export default function DaycareCalendar() {
     { event: 'Daycare Annual closure', date: 'August 16th-20th, 2026', type: 'closure' }
   ];
 
-  const menuWeek1 = [
+  const managedCalendarEvents = (cms.calendarEvents ?? [])
+    .filter(event => event.active !== false)
+    .sort((a, b) => a.isoDate.localeCompare(b.isoDate))
+    .map(event => ({ event: event.title, date: event.date, type: event.type }));
+  const calendarEvents = managedCalendarEvents.length > 0 ? managedCalendarEvents : legacyCalendarEvents;
+
+  const legacyMenuWeek1 = [
     { day: 'Sunday', meal: 'Koshari & Salad' },
     { day: 'Monday', meal: 'Molokhia, Rice, Chicken, and Salad' },
     { day: 'Tuesday', meal: 'Chicken Shawarma, Rice, and yoghurt Salad' },
@@ -57,7 +65,7 @@ export default function DaycareCalendar() {
     { day: 'Thursday', meal: 'Pasta Bolognese and salad' }
   ];
 
-  const menuWeek2 = [
+  const legacyMenuWeek2 = [
     { day: 'Sunday', meal: 'Summer: Veggie Pasta / Winter: Lentil Soup with croutons' },
     { day: 'Monday', meal: 'Seasonal Veg in red sauce, minced meat, white rice and salad' },
     { day: 'Tuesday', meal: 'Yellow rice with chicken and white sauce, salad' },
@@ -65,11 +73,20 @@ export default function DaycareCalendar() {
     { day: 'Thursday', meal: 'Margarita Pizza' }
   ];
 
+  const managedMenus = (cms.meals?.menus ?? []).filter(menu => menu.season === 'winter');
+  const toMenuRows = (week: 'week1' | 'week2') => managedMenus
+    .find(menu => menu.week === week)?.days.map(day => ({ day: day.day, meal: `${day.lunch}${day.sides ? ` — ${day.sides}` : ''}` })) ?? [];
+  const managedMenuWeek1 = toMenuRows('week1');
+  const managedMenuWeek2 = toMenuRows('week2');
+  const menuWeek1 = managedMenuWeek1.length > 0 ? managedMenuWeek1 : legacyMenuWeek1;
+  const menuWeek2 = managedMenuWeek2.length > 0 ? managedMenuWeek2 : legacyMenuWeek2;
+
   const getEventColor = (type: string) => {
     switch (type) {
       case 'holiday': return 'bg-red-100 text-red-700 border-red-200';
       case 'event': return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'academic': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'term': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'parent': return 'bg-green-100 text-green-700 border-green-200';
       case 'ramadan': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
       case 'camp': return 'bg-yellow-100 text-yellow-700 border-yellow-200';

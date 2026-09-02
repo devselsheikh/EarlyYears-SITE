@@ -3,13 +3,13 @@ import { dirname, join } from 'node:path';
 
 const root = process.cwd();
 const manifestPath = join(root, 'public', 'asset-manifest.json');
-const outputRoot = join(root, 'public', 'images', 'slots');
+const imageRoot = join(root, 'public', 'images');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const report = [];
 
-await mkdir(outputRoot, { recursive: true });
-
 for (const [key, asset] of Object.entries(manifest.assets ?? {})) {
+  const brand = key.startsWith('eduhub.') ? 'eduhub' : 'daycare';
+  const outputRoot = join(imageRoot, brand);
   const isLamia = key === 'daycare.educator.lamia';
   const extension = isLamia ? 'png' : 'jpg';
   const outputPath = join(outputRoot, `${key}.${extension}`);
@@ -30,7 +30,7 @@ for (const [key, asset] of Object.entries(manifest.assets ?? {})) {
       await writeFile(outputPath, Buffer.from(await response.arrayBuffer()));
     }
 
-    report.push({ key, path: `/images/slots/${key}.${extension}`, status: 'ready' });
+    report.push({ key, path: `/images/${brand}/${key}.${extension}`, status: 'ready' });
     process.stdout.write(`ready  ${key}\n`);
   } catch (error) {
     report.push({ key, source, status: 'failed', error: String(error) });
@@ -39,7 +39,7 @@ for (const [key, asset] of Object.entries(manifest.assets ?? {})) {
 }
 
 await writeFile(
-  join(outputRoot, 'slot-report.json'),
+  join(imageRoot, 'slot-report.json'),
   `${JSON.stringify({ generatedAt: new Date().toISOString(), assets: report }, null, 2)}\n`,
 );
 

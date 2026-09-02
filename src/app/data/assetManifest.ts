@@ -31,7 +31,7 @@ export interface AssetEntry {
   fallbackUrl: string;
   alt: string;
   usageLocations: string[];
-  system?: boolean; // true = bundled figma/logo asset, not replaceable via URL
+  system?: boolean; // true = bundled logo or system asset, not replaceable via URL
 }
 
 // ─── Educators ────────────────────────────────────────────────────────────────
@@ -128,7 +128,7 @@ const ASSET_DEFINITIONS: Record<string, AssetEntry> = {
     key: 'daycare.educator.lamia',
     name: 'Lamia Hassanin Portrait',
     category: 'daycare-educators',
-    fallbackUrl: '/lamia-hassanin.png',
+    fallbackUrl: '/images/daycare/team/lamia-hassanin.jpg',
     alt: 'Lamia Hassanin, Educational Coordinator',
     usageLocations: ['Educators Carousel', 'Daycare Home – Team'],
   },
@@ -320,8 +320,7 @@ const ASSET_DEFINITIONS: Record<string, AssetEntry> = {
   },
 };
 
-const localFallbackPath = (key: string) =>
-  `/images/slots/${key}.${key === 'daycare.educator.lamia' ? 'png' : 'jpg'}`;
+const localFallbackPath = (key: string) => `/images/${key.startsWith('eduhub.') ? 'eduhub' : 'daycare'}/${key}.jpg`;
 
 /** Public static fallbacks are always bundled semantic slots. */
 export const ASSET_MANIFEST: Record<string, AssetEntry> = Object.fromEntries(

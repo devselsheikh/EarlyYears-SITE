@@ -5,6 +5,7 @@ import DaycareLogo from '../components/DaycareLogo';
 import EduHubLogo from '../components/EduHubLogo';
 import { useCMS } from '../hooks/useCMS';
 import { JsonLd, organizationSchema } from '../components/JsonLd';
+import { SitePopup } from '../components/SitePopup';
 
 function waLink(num: string) {
   return `https://wa.me/${num.replace(/\D/g, '')}`;
@@ -20,6 +21,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <JsonLd data={organizationSchema({ name: s.companyName, url: siteUrl, phone: s.mainPhone, email: s.mainEmail })} />
+      <SitePopup site="all" />
 
       {/* ── Minimal top bar ── */}
       <header className="flex items-center justify-between px-6 sm:px-10 lg:px-16 py-5 border-b border-gray-100">
@@ -43,7 +45,7 @@ export default function Landing() {
       </header>
 
       {/* ── Hero ── */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <main className="landing-main flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-11">
 
         {/* Trust badge */}
         <motion.div
@@ -62,12 +64,10 @@ export default function Landing() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 text-center mb-3 max-w-3xl leading-tight"
+          className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 text-center mb-3 max-w-3xl leading-[1.04] tracking-[-0.045em]"
         >
           Growth Begins with the{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-blue-600">
-            Right Foundations
-          </span>
+          <span className="landing-foundations">Right Foundations</span>
         </motion.h1>
 
         <motion.p
@@ -84,16 +84,16 @@ export default function Landing() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-3 mb-8"
+          className="landing-hero-actions grid sm:grid-cols-2 gap-3 mb-7 w-full max-w-3xl"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-200 text-sm text-orange-800">
+          <Link to={cta.homepageDaycareLink || '/daycare'} className="inline-flex min-h-12 items-center gap-2 px-4 py-2 rounded-2xl bg-orange-50 border border-orange-200 text-sm text-orange-800 no-underline">
             <span className="text-base">🌱</span>
-            <span><strong>The Daycare</strong> — EYFS nursery for children aged 1–5 at AUC New Cairo</span>
-          </span>
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-sm text-blue-900">
+            <span className="flex-1"><strong>The Daycare</strong><small className="block text-xs mt-0.5">EYFS nursery at AUC New Cairo</small></span><ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link to={cta.homepageEduhubLink || '/eduhub'} className="inline-flex min-h-12 items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 border border-blue-200 text-sm text-blue-900 no-underline">
             <span className="text-base">🎓</span>
-            <span><strong>EduHub</strong> — UK-accredited CACHE teacher training in Egypt</span>
-          </span>
+            <span className="flex-1"><strong>EduHub</strong><small className="block text-xs mt-0.5">CACHE teacher training in Egypt</small></span><ArrowRight className="w-4 h-4" />
+          </Link>
         </motion.div>
 
         {/* ── THE FUNNEL SPLIT ── */}
@@ -271,6 +271,8 @@ export default function Landing() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-600">{s.footerCopyright || '© 2026 Early Years Company. All rights reserved.'}</p>
           <div className="flex flex-wrap gap-4 justify-center text-xs text-gray-600">
+            <Link to="/privacy" className="inline-flex min-h-11 items-center">Privacy</Link>
+            <Link to="/terms" className="inline-flex min-h-11 items-center">Terms</Link>
             {s.mainEmail && (
               <a href={`mailto:${s.mainEmail}`} className="inline-flex min-h-11 items-center gap-1 hover:text-gray-900 transition-colors">
                 <Mail className="w-3.5 h-3.5" />
@@ -296,6 +298,7 @@ export default function Landing() {
             )}
           </div>
         </div>
+        <p className="mt-3 text-center text-xs text-gray-500"><MapPin className="inline w-3.5 h-3.5 mr-1" />AUC New Cairo, Campus Center, Arnold Pavilion PO29, New Cairo 11835, Egypt</p>
       </footer>
     </div>
   );
